@@ -1,0 +1,30 @@
+# LLM SDK
+google-genai>=1.0.0
+
+# Configuration & Validation
+pydantic>=2.7.0
+pydantic-settings>=2.2.0
+python-dotenv>=1.0.1
+
+# OS & Process Automation
+psutil>=5.9.8
+pyautogui>=0.9.54
+
+# Browser Automation
+playwright>=1.43.0
+
+# Model Context Protocol (MCP)
+mcp>=1.2.0
+
+# Voice I/O (STT & TTS)
+SpeechRecognition>=3.10.1
+pyttsx3>=2.90
+edge-tts>=7.0.0
+
+# Terminal UI & Interactive REPL
+rich>=13.7.1
+prompt-toolkit>=3.0.43
+
+# Testing
+pytest>=8.1.1
+pytest-asyncio>=0.23.6

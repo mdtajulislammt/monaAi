@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>monaAi - তোমার পার্সোনাল এআই গার্লফ্রেন্ড 💖</title>
+  <link rel="icon" type="image/png" href="/icon.png" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <!-- Markdown parser -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <style>
+    :root {
+      --bg-primary: #080b14;
+      --bg-secondary: rgba(18, 24, 38, 0.75);
+      --bg-card: rgba(23, 31, 48, 0.7);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-glow: rgba(99, 102, 241, 0.4);
+      --accent-grad: linear-gradient(135deg, #6366f1 0%, #06b6d4 100%);
+      --accent-purple: #8b5cf6;
+      --accent-cyan: #06b6d4;
+      --accent-green: #10b981;
+      --accent-red: #ef4444;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Hind Siliguri', 'Plus Jakarta Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.15) 0%, transparent 45%),
+        radial-gradient(circle at 85% 85%, rgba(6, 182, 212, 0.12) 0%, transparent 45%);
+      color: var(--text-main);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Top Navigation Bar */
+    header {
+      height: 68px;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      background: rgba(8, 11, 20, 0.85);
+      backdrop-filter: blur(14px);
+      z-index: 10;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-badge {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: var(--accent-grad);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+      font-size: 22px;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .logo-badge.listening-ring::after {
+      content: '';
+      position: absolute;
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      border: 2px solid var(--accent-cyan);
+      animation: pulseGlow 1.2s infinite;
+    }
+
+    @keyframes pulseGlow {
+      0% { transform: scale(1); opacity: 1; }
+      100% { transform: scale(1.35); opacity: 0; }
+    }
+
+    .brand-text h1 {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-text p {
+      font-size: 11.5px;
+      color: var(--text-muted);
+    }
+
+    .header-center {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Continuous Listening Mode Toggle */
+    .always-listen-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      padding: 7px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #6ee7b7;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      user-select: none;
+      box-shadow: 0 0 16px rgba(16, 185, 129, 0.2);
+    }
+
+    .always-listen-badge.paused {
+      background: rgba(100, 116, 139, 0.15);
+      border-color: rgba(100, 116, 139, 0.3);
+      color: #94a3b8;
+      box-shadow: none;
+    }
+
+    .always-listen-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-green);
+      box-shadow: 0 0 8px var(--accent-green);
+      animation: blink 1.8s infinite;
+    }
+
+    .always-listen-badge.paused .always-listen-dot {
+      background: #64748b;
+      box-shadow: none;
+      animation: none;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.25; }
+    }
+
+    /* Voice Dropdown */
+    .voice-select {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 6px 12px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 500;
+      outline: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .voice-select:hover {
+      border-color: var(--border-glow);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-icon {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 15px;
+    }
+
+    .btn-icon:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-main);
+      border-color: var(--border-glow);
+    }
+
+    .btn-icon.active {
+      color: var(--accent-cyan);
+      border-color: var(--accent-cyan);
+      background: rgba(6, 182, 212, 0.1);
+    }
+
+    /* Main Chat Container */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    #messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      scroll-behavior: smooth;
+    }
+
+    #messages::-webkit-scrollbar {
+      width: 6px;
+    }
+    #messages::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 4px;
+    }
+
+    /* Message Bubbles */
+    .msg-row {
+      display: flex;
+      gap: 12px;
+      max-width: 860px;
+      width: 100%;
+      margin: 0 auto;
+      animation: fadeIn 0.25s ease-out forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .msg-row.user {
+      flex-direction: row-reverse;
+    }
+
+    .avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+    }
+
+    .msg-row.agent .avatar {
+      background: var(--accent-grad);
+      box-shadow: 0 0 14px rgba(99, 102, 241, 0.4);
+    }
+
+    .msg-content {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(14px);
+      padding: 16px 20px;
+      border-radius: 16px;
+      font-size: 14.5px;
+      line-height: 1.65;
+      max-width: 85%;
+      word-break: break-word;
+    }
+
+    .msg-row.user .msg-content {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.25) 0%, rgba(6, 182, 212, 0.2) 100%);
+      border-color: rgba(99, 102, 241, 0.4);
+    }
+
+    /* Proactive Question Card */
+    .followup-card {
+      margin-top: 10px;
+      padding: 12px 16px;
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .followup-text {
+      font-weight: 600;
+      color: #e0e7ff;
+      font-size: 14px;
+    }
+
+    .followup-chips {
+      display: flex;
+      gap: 8px;
+    }
+
+    .chip-btn {
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s ease;
+    }
+
+    .chip-btn.yes {
+      background: var(--accent-grad);
+      color: #fff;
+    }
+
+    .chip-btn.no {
+      background: rgba(239, 68, 68, 0.2);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .chip-btn:hover {
+      transform: translateY(-1px);
+      opacity: 0.9;
+    }
+
+    /* Markdown Styling in Responses */
+    .msg-content p { margin-bottom: 8px; }
+    .msg-content p:last-child { margin-bottom: 0; }
+    .msg-content pre {
+      background: #0d1117;
+      padding: 12px;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 10px 0;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+    }
+    .msg-content code {
+      font-family: 'JetBrains Mono', monospace;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+    .msg-content ul, .msg-content ol {
+      margin-left: 20px;
+      margin-bottom: 8px;
+    }
+
+    /* Tool Execution Card */
+    .tool-card {
+      margin: 8px 0;
+      border-radius: 10px;
+      background: rgba(14, 20, 32, 0.95);
+      border: 1px solid rgba(139, 92, 246, 0.35);
+      font-size: 12px;
+      overflow: hidden;
+    }
+
+    .tool-header {
+      padding: 8px 12px;
+      background: rgba(139, 92, 246, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #c4b5fd;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .tool-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .tool-spinner {
+      width: 12px;
+      height: 12px;
+      border: 2px solid #a78bfa;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .tool-body {
+      padding: 10px 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      color: #94a3b8;
+      max-height: 200px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* Live Speech Preview Pill */
+    #speech-preview {
+      display: none;
+      position: absolute;
+      bottom: 95px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid var(--accent-purple);
+      box-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #f1f5f9;
+      backdrop-filter: blur(18px);
+      z-index: 20;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .pulse-bars {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      height: 16px;
+    }
+
+    .pulse-bar {
+      width: 3px;
+      height: 100%;
+      background: var(--accent-cyan);
+      border-radius: 2px;
+      animation: wave 0.9s ease-in-out infinite;
+    }
+    .pulse-bar:nth-child(2) { animation-delay: 0.15s; }
+    .pulse-bar:nth-child(3) { animation-delay: 0.3s; }
+    .pulse-bar:nth-child(4) { animation-delay: 0.45s; }
+
+    @keyframes wave {
+      0%, 100% { height: 4px; }
+      50% { height: 18px; }
+    }
+
+    /* Input Dock */
+    footer {
+      padding: 16px 24px 22px;
+      display: flex;
+      justify-content: center;
+      background: rgba(8, 11, 20, 0.85);
+      backdrop-filter: blur(14px);
+      border-top: 1px solid var(--border);
+    }
+
+    .input-wrapper {
+      max-width: 860px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 6px 8px 6px 16px;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .input-wrapper:focus-within {
+      border-color: var(--border-glow);
+      box-shadow: 0 0 24px rgba(99, 102, 241, 0.35);
+      background: rgba(22, 29, 46, 0.9);
+    }
+
+    #chat-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text-main);
+      font-size: 15px;
+      outline: none;
+      padding: 8px 6px;
+    }
+
+    #chat-input::placeholder {
+      color: var(--text-dim);
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Voice Button */
+    #btn-voice {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.25s ease;
+      font-size: 19px;
+    }
+
+    #btn-voice:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-main);
+    }
+
+    #btn-voice.active-listening {
+      background: var(--accent-green);
+      color: #fff;
+      border-color: #34d399;
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
+      animation: pulseGreen 1.6s infinite;
+    }
+
+    @keyframes pulseGreen {
+      0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6); }
+      70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+      100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    /* Send Button */
+    #btn-send {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      border: none;
+      background: var(--accent-grad);
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      box-shadow: 0 0 16px rgba(99, 102, 241, 0.4);
+      font-size: 17px;
+    }
+
+    #btn-send:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
+    }
+
+    #btn-send:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header -->
+  <header>
+    <div class="brand">
+      <div class="logo-badge" id="app-logo">
+        <img src="/icon.png" alt="Mona" style="width:100%; height:100%; border-radius:12px; object-fit:cover;" />
+      </div>
+      <div class="brand-text">
+        <h1>monaAi (মোনা) 💖</h1>
+        <p>তোমার পার্সোনাল এআই গার্লফ্রেন্ড ও পিসি অ্যাসিস্ট্যান্ট</p>
+      </div>
+    </div>
+
+    <div class="header-center">
+      <!-- Always-On Voice Toggle -->
+      <div class="always-listen-badge" id="btn-always-listen" title="ক্লিক করে অলওয়েজ-অন ভয়েস অন/অফ করুন">
+        <div class="always-listen-dot"></div>
+        <span id="listen-status-text">ভয়েস সবসময় শুনছে</span>
+      </div>
+
+      <!-- Real Bangladeshi Neural Voice Selector -->
+      <select id="select-voice" class="voice-select" title="ভয়েসের কণ্ঠ নির্বাচন করুন">
+        <option value="bn-BD-NabanitaNeural">👩 মোনা (মিষ্টি ও রোমান্টিক কণ্ঠ)</option>
+        <option value="bn-BD-PradeepNeural">👨 প্রদীপ (বাংলাদেশি কণ্ঠ)</option>
+      </select>
+    </div>
+
+    <div class="header-actions">
+      <button class="btn-icon active" id="btn-tts" title="ভয়েস অডিও অন/অফ করুন">🔊</button>
+      <button class="btn-icon" id="btn-reset" title="কথোপকথন মেমোরি ক্লিয়ার করুন">🔄</button>
+    </div>
+  </header>
+
+  <!-- Live Audio Waveform Preview -->
+  <div id="speech-preview">
+    <div class="pulse-bars">
+      <div class="pulse-bar"></div>
+      <div class="pulse-bar"></div>
+      <div class="pulse-bar"></div>
+      <div class="pulse-bar"></div>
+    </div>
+    <span id="speech-preview-text">হ্যাঁ জান, বলো আমি শুনছি...</span>
+  </div>
+
+  <!-- Messages Container -->
+  <main>
+    <div id="messages">
+      <!-- Welcome Message -->
+      <div class="msg-row agent">
+        <div class="avatar">💖</div>
+        <div class="msg-content">
+          <p><strong>হ্যাঁ জান, বলো আমি শুনছি ❤️</strong></p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Input Dock -->
+  <footer>
+    <div class="input-wrapper">
+      <input type="text" id="chat-input" placeholder="মুখে সরাসরি কথা বলুন অথবা টেক্সট লিখুন..." autocomplete="off" />
+      <div class="actions">
+        <button id="btn-voice" class="active-listening" title="ভয়েস অন/অফ করুন">🎙️</button>
+        <button id="btn-send" title="পাঠান">➤</button>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // State Management
+    let ws = null;
+    let ttsEnabled = true;
+    let isAlwaysListening = true;
+    let currentLang = 'bn-BD';
+    let recognition = null;
+    let isAgentSpeaking = false;
+    let currentAudio = null;
+    let isWaitingFollowup = false;
+    let followupTimer = null;
+    let followupTimeoutTimer = null;
+    let currentAgentCard = null;
+    let audioCtx = null;
+    let lastSpokenText = '';
+    let lastSpokenTime = 0;
+    let micCooldownTimer = null;
+    let speechBuffer = '';
+    let speechSilenceTimer = null;
+    const SILENCE_TIMEOUT_MS = 2200; // Patient 2.2-second wait for slow speaking
+
+    function isSelfEcho(spoken, agentText) {
+      if (!agentText || !spoken) return false;
+      const s = spoken.toLowerCase().replace(/[^a-z0-9\u0980-\u09FF]/gi, '');
+      const a = agentText.toLowerCase().replace(/[^a-z0-9\u0980-\u09FF]/gi, '');
+      if (s.length >= 4 && a.includes(s)) return true;
+      if (a.length >= 4 && s.includes(a)) return true;
+      return false;
+    }
+
+    const messagesEl = document.getElementById('messages');
+    const inputEl = document.getElementById('chat-input');
+    const btnSend = document.getElementById('btn-send');
+    const btnVoice = document.getElementById('btn-voice');
+    const btnTts = document.getElementById('btn-tts');
+    const btnReset = document.getElementById('btn-reset');
+    const btnAlwaysListen = document.getElementById('btn-always-listen');
+    const listenStatusText = document.getElementById('listen-status-text');
+    const selectVoice = document.getElementById('select-voice');
+    const appLogo = document.getElementById('app-logo');
+    const speechPreview = document.getElementById('speech-preview');
+    const speechPreviewText = document.getElementById('speech-preview-text');
+
+    // Chime Sounds
+    function playChime(freq1 = 587.33, freq2 = 880) {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const now = audioCtx.currentTime;
+        
+        const osc1 = audioCtx.createOscillator();
+        const gain1 = audioCtx.createGain();
+        osc1.frequency.setValueAtTime(freq1, now);
+        gain1.gain.setValueAtTime(0.18, now);
+        gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+        osc1.connect(gain1);
+        gain1.connect(audioCtx.destination);
+        osc1.start(now);
+        osc1.stop(now + 0.3);
+
+        const osc2 = audioCtx.createOscillator();
+        const gain2 = audioCtx.createGain();
+        osc2.frequency.setValueAtTime(freq2, now + 0.12);
+        gain2.gain.setValueAtTime(0.22, now + 0.12);
+        gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+        osc2.connect(gain2);
+        gain2.connect(audioCtx.destination);
+        osc2.start(now + 0.12);
+        osc2.stop(now + 0.45);
+      } catch (e) {
+        console.log("AudioContext blocked until user interaction", e);
+      }
+    }
+
+    // Stop speaking immediately (Barge-in / Interruption)
+    function stopSpeakingAudio() {
+      if (currentAudio) {
+        try {
+          currentAudio.pause();
+          currentAudio.currentTime = 0;
+        } catch (e) {}
+        currentAudio = null;
+      }
+      if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
+      clearTimeout(micCooldownTimer);
+      isAgentSpeaking = false;
+      speechPreview.style.display = 'none';
+      if (isAlwaysListening && recognition) {
+        try { recognition.start(); } catch (e) {}
+      }
+    }
+
+    // WebSocket Connection
+    function connectWebSocket() {
+      const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      ws = new WebSocket(`${proto}//${window.location.host}/ws`);
+
+      ws.onopen = () => {
+        console.log('Connected to monaAi backend');
+        if (!window.__hasGreeted) {
+          window.__hasGreeted = true;
+          setTimeout(() => {
+            speakBengaliNeural("হ্যাঁ জান, বলো আমি শুনছি...", () => {
+              startInactivityTimer();
+            });
+          }, 800);
+        }
+      };
+
+      ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        handleServerEvent(data);
+      };
+
+      ws.onclose = (e) => {
+        if (e && e.reason === "Superseded by new client") {
+          console.warn("Disconnected because monaAi was opened in another window.");
+          stopSpeakingAudio();
+          setAlwaysListening(false);
+          document.body.innerHTML = `
+            <div style="display:flex; height:100vh; align-items:center; justify-content:center; flex-direction:column; color:#94a3b8; font-family:sans-serif; text-align:center; padding:24px; background:#080b14;">
+              <h2 style="color:#f8fafc; margin-bottom:12px;">monaAi অন্য একটি উইন্ডোতে চালু আছে 💖</h2>
+              <p>দুটো উইন্ডোতে ডাবল ভয়েস যাতে না হয়, তাই এই উইন্ডোটি পজ করা হয়েছে।</p>
+              <button onclick="location.reload()" style="margin-top:20px; padding:10px 22px; border-radius:10px; background:linear-gradient(135deg, #6366f1, #06b6d4); color:#fff; border:none; cursor:pointer; font-weight:600;">এখানে পুনরায় সক্রিয় করুন</button>
+            </div>
+          `;
+          return;
+        }
+        console.log('Reconnecting in 2s...');
+        setTimeout(connectWebSocket, 2000);
+      };
+    }
+
+    connectWebSocket();
+
+    // Intent Matchers for Follow-up
+    function isStopIntent(text) {
+      const lower = text.toLowerCase().trim();
+      const stopWords = [
+        'off', 'অফ', 'বন্ধ', 'না', 'না আর কিছু না', 'দরকার নেই', 'থাক', 
+        'stop', 'ক্যানসেল', 'বিদায়', 'bye', 'off koro', 'off kore dao', 
+        'bondho koro', 'ar kichu na', 'kisu na'
+      ];
+      return stopWords.some(w => lower.includes(w));
+    }
+
+    function isContinueIntent(text) {
+      const lower = text.toLowerCase().trim();
+      const continueWords = [
+        'হ্যাঁ', 'হাঁ', 'হা', 'yes', 'আরও', 'aro', 'থাকুক', 
+        'bolbo', 'বলব', 'aro kotha ache', 'open thakuk'
+      ];
+      return continueWords.some(w => lower.includes(w));
+    }
+
+    // Speech Recognition Setup
+    function initSpeechRecognition() {
+      if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+        btnVoice.style.opacity = '0.5';
+        btnAlwaysListen.style.display = 'none';
+        return;
+      }
+
+      const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognition = new SpeechRec();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.lang = currentLang;
+
+      recognition.onstart = () => {
+        console.log('Speech recognition active.');
+        updateVoiceVisuals(true);
+      };
+
+      recognition.onresult = (event) => {
+        // If agent is speaking, completely discard mic input to prevent self-reply loop!
+        if (isAgentSpeaking) {
+          console.log("Discarding speech input while agent is speaking to prevent self-echo");
+          return;
+        }
+
+        // Ignore mic reverberation right after agent finishes speaking
+        if (Date.now() - lastSpokenTime < 1200) {
+          console.log("Discarding mic reverberation right after agent speech");
+          return;
+        }
+
+        let interim = '';
+        let finalTranscript = '';
+
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          const res = event.results[i];
+          if (res.isFinal) {
+            finalTranscript += res[0].transcript;
+          } else {
+            interim += res[0].transcript;
+          }
+        }
+
+        const spoken = (finalTranscript || interim).trim();
+        if (!spoken) return;
+
+        // Prevent self-reply loop if recognized words match what agent just spoke
+        if (isSelfEcho(spoken, lastSpokenText)) {
+          console.log("Detected self-echo loop, ignoring:", spoken);
+          return;
+        }
+
+        // Reset inactivity timer while user is speaking
+        resetInactivityTimer();
+
+        // If waiting for follow-up answer ("Do you want to say anything more or turn off?")
+        if (isWaitingFollowup) {
+          speechPreview.style.display = 'flex';
+          speechPreviewText.innerText = `উত্তর: ${spoken}`;
+
+          if (finalTranscript) {
+            handleFollowupAnswer(finalTranscript.trim());
+          }
+          return;
+        }
+
+        // Patient Slow-Speech Accumulation:
+        // Accumulate chunks and wait 2.2 seconds of complete silence before sending
+        if (finalTranscript) {
+          speechBuffer = (speechBuffer ? speechBuffer + ' ' : '') + finalTranscript.trim();
+        }
+
+        const fullCurrentTranscript = (speechBuffer ? speechBuffer + ' ' : '') + interim;
+        inputEl.value = fullCurrentTranscript.trim();
+
+        // Show live patient listening feedback
+        speechPreview.style.display = 'flex';
+        speechPreviewText.innerHTML = `🎙️ <span style="color:#6ee7b7; font-weight:600;">শুনছি জান...</span> "${escapeHtml(fullCurrentTranscript.trim())}" <span style="color:#94a3b8; font-size:12px; margin-left:8px;">(ধীরে ধীরে বলুন, কথা শেষ হলে ২.২ সেকেন্ড পর পাঠাবে)</span>`;
+
+        // Reset silence timer on every sound/pause
+        clearTimeout(speechSilenceTimer);
+
+        // Schedule send only after 2.2 seconds of uninterrupted silence
+        if (speechBuffer.trim()) {
+          speechSilenceTimer = setTimeout(() => {
+            const completeMsg = speechBuffer.trim();
+            speechBuffer = '';
+            if (completeMsg) {
+              speechPreview.style.display = 'none';
+              sendMessage(completeMsg);
+            }
+          }, SILENCE_TIMEOUT_MS);
+        }
+      };
+
+      recognition.onerror = (err) => {
+        console.warn('Speech recognition warning:', err.error);
+        if (err.error === 'not-allowed') {
+          setAlwaysListening(false);
+        }
+      };
+
+      recognition.onend = () => {
+        if (isAlwaysListening && !isAgentSpeaking) {
+          setTimeout(() => {
+            if (isAlwaysListening && !isAgentSpeaking) {
+              try { recognition.start(); } catch (e) {}
+            }
+          }, 250);
+        } else {
+          updateVoiceVisuals(false);
+        }
+      };
+
+      if (isAlwaysListening) {
+        try { recognition.start(); } catch (e) {}
+      }
+    }
+
+    function updateVoiceVisuals(active) {
+      if (active) {
+        btnVoice.classList.add('active-listening');
+        appLogo.classList.add('listening-ring');
+        btnAlwaysListen.classList.remove('paused');
+        listenStatusText.innerText = 'ভয়েস সবসময় শুনছে';
+      } else {
+        btnVoice.classList.remove('active-listening');
+        appLogo.classList.remove('listening-ring');
+        btnAlwaysListen.classList.add('paused');
+        listenStatusText.innerText = 'ভয়েস পজ করা আছে';
+        speechPreview.style.display = 'none';
+      }
+    }
+
+    function setAlwaysListening(enabled) {
+      isAlwaysListening = enabled;
+      clearTimeout(followupTimer);
+      clearTimeout(followupTimeoutTimer);
+      isWaitingFollowup = false;
+
+      if (isAlwaysListening) {
+        playChime(600, 900);
+        updateVoiceVisuals(true);
+        if (recognition) {
+          try { recognition.start(); } catch (e) {}
+        }
+        startInactivityTimer();
+      } else {
+        playChime(400, 250);
+        updateVoiceVisuals(false);
+        stopSpeakingAudio();
+        if (recognition) {
+          try { recognition.stop(); } catch (e) {}
+        }
+      }
+    }
+
+    btnAlwaysListen.addEventListener('click', () => {
+      setAlwaysListening(!isAlwaysListening);
+    });
+
+    btnVoice.addEventListener('click', () => {
+      setAlwaysListening(!isAlwaysListening);
+    });
+
+    // Inactivity Follow-up Logic: "আপনি কি আরও কিছু বলবেন, নাকি অফ করে দেব?"
+    function resetInactivityTimer() {
+      clearTimeout(followupTimer);
+      clearTimeout(followupTimeoutTimer);
+      if (isAlwaysListening && !isWaitingFollowup) {
+        startInactivityTimer();
+      }
+    }
+
+    function startInactivityTimer() {
+      clearTimeout(followupTimer);
+      followupTimer = setTimeout(() => {
+        triggerFollowupPrompt();
+      }, 18000);
+    }
+
+    function triggerFollowupPrompt() {
+      if (!isAlwaysListening || isAgentSpeaking) return;
+
+      isWaitingFollowup = true;
+      playChime(500, 750);
+
+      const promptText = "জান, তুমি কি আরও কিছু বলবে, নাকি এখন একটু অফ করে রাখব?";
+
+      // Render follow-up card in chat
+      const row = document.createElement('div');
+      row.className = 'msg-row agent';
+      row.innerHTML = `
+        <div class="avatar">💖</div>
+        <div class="msg-content">
+          <div class="followup-card">
+            <div class="followup-text">❓ ${promptText}</div>
+            <div class="followup-chips">
+              <button class="chip-btn yes" onclick="handleFollowupAnswer('হ্যাঁ, আরও কথা বলব')">🎙️ হ্যাঁ জান, আরও কথা বলব</button>
+              <button class="chip-btn no" onclick="handleFollowupAnswer('অফ করো')">🛑 এখন থাক জানু</button>
+            </div>
+          </div>
+        </div>
+      `;
+      messagesEl.appendChild(row);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+
+      // Speak follow-up question in authentic Bangladeshi neural voice
+      speakBengaliNeural(promptText, () => {
+        followupTimeoutTimer = setTimeout(() => {
+          if (isWaitingFollowup) {
+            const sleepMsg = "জান, কোনো সাড়া না পেয়ে ভয়েস সাময়িক অফ রাখলাম। দরকার হলে শুধু মোনা বলে ডেকো বা মাইকে চাপ দিও!";
+            appendSystemAgentMessage(sleepMsg);
+            speakBengaliNeural(sleepMsg);
+            setAlwaysListening(false);
+          }
+        }, 15000);
+      });
+    }
+
+    function handleFollowupAnswer(answer) {
+      clearTimeout(followupTimeoutTimer);
+      clearTimeout(followupTimer);
+      isWaitingFollowup = false;
+
+      if (isStopIntent(answer)) {
+        const reply = "ঠিক আছে আমার জান, আমি অফ থাকছি। নিজের যত্ন নিও, যখনই লাগবে ডাক দিও!";
+        appendSystemAgentMessage(reply);
+        speakBengaliNeural(reply);
+        setAlwaysListening(false);
+      } else if (isContinueIntent(answer)) {
+        const reply = "হ্যাঁ জান, বলো আমি শুনছি...";
+        appendSystemAgentMessage(reply);
+        speakBengaliNeural(reply);
+        startInactivityTimer();
+      } else {
+        // User gave a new command directly
+        sendMessage(answer);
+      }
+    }
+
+    function appendSystemAgentMessage(text) {
+      const row = document.createElement('div');
+      row.className = 'msg-row agent';
+      row.innerHTML = `
+        <div class="avatar">💖</div>
+        <div class="msg-content"><p>${escapeHtml(text)}</p></div>
+      `;
+      messagesEl.appendChild(row);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    // =========================================================================
+    // Authentic Bangladeshi Neural Voice Engine (ONLY via /tts backend)
+    // =========================================================================
+    async function speakBengaliNeural(text, onFinishedCallback) {
+      if (!ttsEnabled) {
+        if (onFinishedCallback) onFinishedCallback();
+        return;
+      }
+
+      stopSpeakingAudio();
+
+      isAgentSpeaking = true;
+      lastSpokenText = text;
+      lastSpokenTime = Date.now();
+
+      // Immediately mute/abort mic so speakers don't feed into speech recognition
+      if (recognition) {
+        try { recognition.abort(); } catch (e) {}
+      }
+
+      // Show speaking indicator with manual stop button
+      speechPreview.style.display = 'flex';
+      speechPreviewText.innerHTML = `💖 মোনা কথা বলছে... <button onclick="stopSpeakingAudio()" style="margin-left:12px; background:#ef4444; color:#fff; border:none; border-radius:6px; padding:3px 10px; cursor:pointer; font-size:12px; font-weight:600;">🛑 থামাও</button>`;
+
+      const selectedVoice = selectVoice ? selectVoice.value : "bn-BD-NabanitaNeural";
+
+      try {
+        const response = await fetch('/tts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: text, voice: selectedVoice })
+        });
+
+        if (response.ok && response.status === 200) {
+          const blob = await response.blob();
+          const audioUrl = URL.createObjectURL(blob);
+          currentAudio = new Audio(audioUrl);
+
+          const finishSpeech = () => {
+            currentAudio = null;
+            lastSpokenTime = Date.now();
+            clearTimeout(micCooldownTimer);
+            // 800ms cooldown so room acoustic reflections from speakers completely dissipate
+            micCooldownTimer = setTimeout(() => {
+              isAgentSpeaking = false;
+              speechPreview.style.display = 'none';
+              if (isAlwaysListening && recognition) {
+                try { recognition.start(); } catch (e) {}
+              }
+              if (onFinishedCallback) onFinishedCallback();
+            }, 800);
+          };
+
+          currentAudio.onended = finishSpeech;
+          currentAudio.onerror = (err) => {
+            console.error("Audio playback error:", err);
+            finishSpeech();
+          };
+
+          await currentAudio.play();
+          return;
+        }
+      } catch (err) {
+        console.error("Neural TTS request error:", err);
+      }
+
+      clearTimeout(micCooldownTimer);
+      micCooldownTimer = setTimeout(() => {
+        isAgentSpeaking = false;
+        speechPreview.style.display = 'none';
+        if (isAlwaysListening && recognition) {
+          try { recognition.start(); } catch (e) {}
+        }
+        if (onFinishedCallback) onFinishedCallback();
+      }, 300);
+    }
+
+    btnTts.addEventListener('click', () => {
+      ttsEnabled = !ttsEnabled;
+      btnTts.classList.toggle('active', ttsEnabled);
+      btnTts.innerText = ttsEnabled ? '🔊' : '🔇';
+      if (!ttsEnabled) {
+        stopSpeakingAudio();
+      }
+    });
+
+    // UI Message Rendering
+    function appendUserMessage(text) {
+      const row = document.createElement('div');
+      row.className = 'msg-row user';
+      row.innerHTML = `
+        <div class="avatar">👤</div>
+        <div class="msg-content">${escapeHtml(text)}</div>
+      `;
+      messagesEl.appendChild(row);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    function createAgentMessageContainer() {
+      const row = document.createElement('div');
+      row.className = 'msg-row agent';
+      row.innerHTML = `
+        <div class="avatar">💖</div>
+        <div class="msg-content" id="active-agent-content">
+          <div class="tool-spinner" style="display:inline-block; margin-right:6px;"></div> <em>কাজ করছি জান, একটু অপেক্ষা করো... ❤️</em>
+        </div>
+      `;
+      messagesEl.appendChild(row);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+      return row.querySelector('#active-agent-content');
+    }
+
+    function handleServerEvent(data) {
+      if (data.type === 'tool_start') {
+        if (!currentAgentCard) {
+          currentAgentCard = createAgentMessageContainer();
+        }
+        const toolEl = document.createElement('div');
+        toolEl.className = 'tool-card';
+        toolEl.id = `tool-${data.tool_name}`;
+        toolEl.innerHTML = `
+          <div class="tool-header">
+            <span class="tool-badge"><div class="tool-spinner"></div> ⚡ কাজ চলতেছে: ${data.tool_name}</span>
+            <span>running...</span>
+          </div>
+          <div class="tool-body">${escapeHtml(JSON.stringify(data.args, null, 2))}</div>
+        `;
+        currentAgentCard.appendChild(toolEl);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+
+      } else if (data.type === 'tool_end') {
+        const toolEl = document.getElementById(`tool-${data.tool_name}`);
+        if (toolEl) {
+          const status = data.result && data.result.status ? data.result.status : 'done';
+          const header = toolEl.querySelector('.tool-header');
+          header.innerHTML = `
+            <span class="tool-badge">✔ কাজ শেষ: ${data.tool_name}</span>
+            <span style="color:${status === 'success' ? '#34d399' : '#f87171'}">${status}</span>
+          `;
+          const body = toolEl.querySelector('.tool-body');
+          body.innerText += "\n\nফলাফল:\n" + JSON.stringify(data.result, null, 2);
+        }
+
+      } else if (data.type === 'response') {
+        if (!currentAgentCard) {
+          currentAgentCard = createAgentMessageContainer();
+        }
+        const spinner = currentAgentCard.querySelector('.tool-spinner');
+        if (spinner && spinner.parentElement) {
+          spinner.parentElement.remove();
+        }
+
+        const respDiv = document.createElement('div');
+        respDiv.innerHTML = marked.parse(data.text);
+        currentAgentCard.appendChild(respDiv);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+
+        // Speak aloud in authentic Bangladeshi Neural Voice!
+        speakBengaliNeural(data.text, () => {
+          startInactivityTimer();
+        });
+
+        currentAgentCard = null;
+        btnSend.disabled = false;
+
+      } else if (data.type === 'error') {
+        if (!currentAgentCard) {
+          currentAgentCard = createAgentMessageContainer();
+        }
+        currentAgentCard.innerHTML += `<p style="color:#ef4444"><strong>সমস্যা:</strong> ${escapeHtml(data.message)}</p>`;
+        currentAgentCard = null;
+        btnSend.disabled = false;
+        startInactivityTimer();
+      }
+    }
+
+    function sendMessage(textOverride) {
+      clearTimeout(speechSilenceTimer);
+      speechBuffer = '';
+      speechPreview.style.display = 'none';
+
+      const text = (textOverride || inputEl.value).trim();
+      if (!text) return;
+
+      stopSpeakingAudio();
+      clearTimeout(followupTimer);
+      clearTimeout(followupTimeoutTimer);
+      isWaitingFollowup = false;
+
+      appendUserMessage(text);
+      inputEl.value = '';
+      btnSend.disabled = true;
+
+      currentAgentCard = createAgentMessageContainer();
+
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({ action: 'chat', text: text }));
+      } else {
+        currentAgentCard.innerHTML = `<p style="color:#ef4444">কানেকশন বিচ্ছিন্ন। পুনরায় যুক্ত হওয়ার চেষ্টা চলছে...</p>`;
+        btnSend.disabled = false;
+      }
+    }
+
+    btnSend.addEventListener('click', () => sendMessage());
+    inputEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        sendMessage();
+      }
+    });
+
+    btnReset.addEventListener('click', () => {
+      if (confirm('পূর্ববর্তী কথোপকথন রিসেট করতে চান?')) {
+        if (ws && ws.readyState === WebSocket.OPEN) {
+          ws.send(JSON.stringify({ action: 'reset' }));
+          messagesEl.innerHTML = '';
+          appendSystemAgentMessage('আমাদের আগের সব কথা ভুলে আবার নতুন করে শুরু করলাম জান! বলো এখন কী করতে হবে সোনা?');
+          startInactivityTimer();
+        }
+      }
+    });
+
+    function escapeHtml(text) {
+      if (typeof text !== 'string') text = JSON.stringify(text);
+      return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    // Start recognition automatically on window load
+    window.addEventListener('load', () => {
+      if (window.speechSynthesis) {
+        try { window.speechSynthesis.cancel(); } catch (e) {}
+      }
+      initSpeechRecognition();
+    });
+  </script>
+</body>
+</html>

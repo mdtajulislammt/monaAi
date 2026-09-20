@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=monaAi
+Comment=monaAi - Your Personal AI Girlfriend & Desktop Assistant
+Exec=/home/mdtajulislam/Projects/monaAi/run.sh
+Icon=/home/mdtajulislam/Projects/monaAi/ui/icon.png
+Terminal=false
+Type=Application
+Categories=Utility;Development;AudioVideo;
+StartupWMClass=monaAi
+Keywords=ai;assistant;mona;voice;girlfriend;
