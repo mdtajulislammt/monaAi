@@ -1,10 +1,18 @@
+# ==============================================================================
 # Environment & Secrets
+# ==============================================================================
 .env
 .env.*
 !.env.example
+*.pem
+*.key
+*.cert
 
-# Python
+# ==============================================================================
+# Python Bytecode & Build Artifacts
+# ==============================================================================
 __pycache__/
+**/__pycache__/
 *.py[cod]
 *$py.class
 *.so
@@ -24,39 +32,82 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+*.manifest
+*.spec
 
-# Virtual Environment
+# ==============================================================================
+# Virtual Environments
+# ==============================================================================
 venv/
 env/
 ENV/
+.venv/
 env.bak/
 venv.bak/
 
-# Testing & Coverage
+# ==============================================================================
+# Persistent Databases & Runtime Memory
+# ==============================================================================
+data/*
+!data/.gitkeep
+jarvis-core/data/*
+!jarvis-core/data/.gitkeep
+*.sqlite3
+*.sqlite3-journal
+*.db
+chroma_db/
+**/chroma_db/
+*.bin
+
+# ==============================================================================
+# Browser & Desktop UI Runtime Profiles
+# ==============================================================================
+.app_profile/
+.jarvis_app_profile/
+Singleton*
+SingletonLock
+SingletonSocket
+SingletonCookie
+
+# ==============================================================================
+# Testing & Code Coverage
+# ==============================================================================
 .pytest_cache/
+**/.pytest_cache/
 .coverage
 .coverage.*
+nosetests.xml
+coverage.xml
 htmlcov/
 .tox/
 .nox/
 
-# Browser Desktop App Profile & Cache (Runtime browser artifacts)
-.app_profile/
-Singleton*
+# ==============================================================================
+# Audio, Media & Scratch Runtime Files
+# ==============================================================================
+*.mp3
+*.wav
+*.m4a
+*.webm
+scratch/
+fahim.txt
+new_note.txt
+*.tmp
 
-# Logs & Temporary files
+# ==============================================================================
+# Logs
+# ==============================================================================
 *.log
 logs/
-scratch/
-new_note.txt
+*.log.*
 
-# Editor / IDE configuration
+# ==============================================================================
+# IDEs & Operating System Files
+# ==============================================================================
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
-
-# Operating System files
 .DS_Store
 Thumbs.db
