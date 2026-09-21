@@ -101,6 +101,28 @@ class Settings(BaseSettings):
         description="Volume delta for edge-tts",
     )
 
+    # ElevenLabs Voice Settings
+    tts_provider: str = Field(
+        default="elevenlabs",
+        alias="TTS_PROVIDER",
+        description="Active TTS provider: 'elevenlabs' or 'edge_tts'",
+    )
+    elevenlabs_api_key: str = Field(
+        default="",
+        alias="ELEVENLABS_API_KEY",
+        description="ElevenLabs API Key",
+    )
+    elevenlabs_voice_id: str = Field(
+        default="EXAVITQu4vr4xnSDxMaL",
+        alias="ELEVENLABS_VOICE_ID",
+        description="ElevenLabs Voice ID (Sarah, Lily, Jessica, etc.)",
+    )
+    elevenlabs_model_id: str = Field(
+        default="eleven_multilingual_v2",
+        alias="ELEVENLABS_MODEL_ID",
+        description="ElevenLabs model ID for multilingual speech",
+    )
+
     @classmethod
     def _normalize_edge_tts_param(cls, val: Any, default: str = "+0%") -> str:
         if val is None:

@@ -225,7 +225,7 @@ def interactive_voice_loop(agent: JarvisAgent):
     console.print("[dim](কথোপকথন থামাতে 'বিদায়' বা 'exit' বলুন, অথবা Ctrl+C চাপুন)[/dim]\n")
 
     # Initial greeting played to 100% completion before opening microphone
-    greeting = "জ্বি স্যার, বলুন কী করব?"
+    greeting = "হ্যালো স্যার, বলুন কী করব?"
     console.print(f"[bold green]JARVIS:[/bold green] {greeting}")
     ve.speak(greeting, blocking=True)
 
@@ -240,10 +240,21 @@ def interactive_voice_loop(agent: JarvisAgent):
             console.print(f"[bold yellow]🗣️ আপনি বলেছেন:[/bold yellow] {speech_text}")
 
             if any(term in speech_text.lower() for term in ["বিদায়", "exit", "quit", "বন্ধ করো", "bye"]):
-                farewell = "জ্বি স্যার, বিদায়। ভালো থাকবেন।"
+                farewell = "হ্যালো স্যার, বিদায়। ভালো থাকবেন।"
                 console.print(f"[bold green]JARVIS:[/bold green] {farewell}")
                 ve.speak(farewell, blocking=True)
                 break
+
+            normalized = speech_text.strip().lower().rstrip("?.,!|। ")
+            wake_calls = [
+                "জার্ভিস", "জারভিস", "jarvis", "jarvis?", "hey jarvis", "hi jarvis",
+                "hello jarvis", "হ্যালো জার্ভিস", "জার্ভিস শুনছো", "জার্ভিস শুনছেন",
+                "শুনছো", "শুনছেন", "জার্ভিস আছো", "জার্ভিস আছেন", "এই জার্ভিস", "হ্যালো", "হাই", "hello", "hi"
+            ]
+            if normalized not in wake_calls:
+                ack = "ঠিক আছে স্যার, আমি দেখছি, আমাকে একটু সময় দিন..."
+                console.print(f"[bold cyan]JARVIS:[/bold cyan] {ack}")
+                ve.speak(ack, blocking=False)
 
             with console.status("[bold cyan]JARVIS কাজ করছে...[/bold cyan]"):
                 response = agent.chat(speech_text)
@@ -262,11 +273,14 @@ def interactive_voice_loop(agent: JarvisAgent):
 def main():
     """Main CLI entrypoint."""
     parser = argparse.ArgumentParser(description="JARVIS - Local Autonomous AI Desktop Assistant & System Controller")
+    parser.add_argument("--ui", action="store_true", help="Start the Desktop HUD App window")
     parser.add_argument("--voice", action="store_true", help="Start in natural Bengali voice conversation mode")
-    parser.add_argument("--text", action="store_true", help="Start in interactive terminal CLI REPL mode")
+    parser.add_argument("--text", "--cli", dest="cli", action="store_true", help="Start in interactive terminal CLI REPL mode")
     parser.add_argument("--prompt", type=str, help="Execute a single command or question and exit")
     parser.add_argument("--mcp", action="store_true", help="Launch FastMCP stdio server for IDE integration")
     parser.add_argument("--model", type=str, help="Override default Gemini model")
+    parser.add_argument("--port", type=int, default=8765, help="Port for Desktop Web UI (default: 8765)")
+    parser.add_argument("--no-browser", action="store_true", help="Do not open desktop window automatically")
 
     args = parser.parse_args()
 
@@ -276,26 +290,42 @@ def main():
         run_server()
         return
 
-    # Initialize Agent with visual screen feedback and pre-execution full-screen inspect hooks
-    agent = JarvisAgent(
-        model_name=args.model,
-        on_tool_start=on_tool_start_visual,
-        on_tool_end=on_tool_end_visual,
-        on_pre_execution=on_pre_execution_visual,
-    )
-
     # One-shot prompt mode
     if args.prompt:
+        agent = JarvisAgent(
+            model_name=args.model,
+            on_tool_start=on_tool_start_visual,
+            on_tool_end=on_tool_end_visual,
+            on_pre_execution=on_pre_execution_visual,
+        )
         run_single_prompt(agent, args.prompt, voice_enabled=args.voice)
         return
 
     # Voice loop mode
     if args.voice:
+        agent = JarvisAgent(
+            model_name=args.model,
+            on_tool_start=on_tool_start_visual,
+            on_tool_end=on_tool_end_visual,
+            on_pre_execution=on_pre_execution_visual,
+        )
         interactive_voice_loop(agent)
         return
 
-    # Default to text interactive mode
-    interactive_text_loop(agent, voice_enabled=False)
+    # Terminal interactive text mode
+    if args.cli:
+        agent = JarvisAgent(
+            model_name=args.model,
+            on_tool_start=on_tool_start_visual,
+            on_tool_end=on_tool_end_visual,
+            on_pre_execution=on_pre_execution_visual,
+        )
+        interactive_text_loop(agent, voice_enabled=False)
+        return
+
+    # Default action: Launch Desktop HUD App Window
+    from interfaces.web_ui import run_web_ui
+    run_web_ui(port=args.port, open_browser=not args.no_browser)
 
 
 if __name__ == "__main__":

@@ -155,24 +155,58 @@ class BengaliVoiceEngine:
         return False
 
     async def _generate_audio_file(self, text: str, output_path: str) -> bool:
-        """Synthesize Bengali speech using edge-tts asynchronously."""
-        import edge_tts
-
+        """Synthesize Bengali speech using ElevenLabs (with fallback to edge-tts)."""
         clean_text = self._sanitize_text_for_speech(text)
         if not clean_text:
             return False
 
-        rate = self.settings.voice_rate if re.match(r"^[+-]\d+%$", str(self.settings.voice_rate)) else "+0%"
-        volume = self.settings.voice_volume if re.match(r"^[+-]\d+%$", str(self.settings.voice_volume)) else "+0%"
+        # Attempt 1: ElevenLabs AI Voice (Ultra-Realistic Girl Voice)
+        if self.settings.tts_provider == "elevenlabs" and self.settings.elevenlabs_api_key:
+            try:
+                import httpx
+                voice_id = self.settings.elevenlabs_voice_id or "EXAVITQu4vr4xnSDxMaL"
+                model_id = self.settings.elevenlabs_model_id or "eleven_multilingual_v2"
+                url = f"https://api.elevenlabs.io/v1/text-to-speech/{voice_id}"
+                headers = {
+                    "xi-api-key": self.settings.elevenlabs_api_key,
+                    "Content-Type": "application/json",
+                }
+                payload = {
+                    "text": clean_text,
+                    "model_id": model_id,
+                    "voice_settings": {
+                        "stability": 0.5,
+                        "similarity_boost": 0.8,
+                    }
+                }
+                async with httpx.AsyncClient(timeout=15.0) as client:
+                    resp = await client.post(url, headers=headers, json=payload)
+                    if resp.status_code == 200 and len(resp.content) > 100:
+                        with open(output_path, "wb") as f:
+                            f.write(resp.content)
+                        return True
+                    else:
+                        logger.warning(f"ElevenLabs TTS response status {resp.status_code}. Falling back to edge-tts.")
+            except Exception as e:
+                logger.warning(f"ElevenLabs TTS failed: {e}. Falling back to edge-tts.")
 
-        communicate = edge_tts.Communicate(
-            text=clean_text,
-            voice=self.settings.voice_name,
-            rate=rate,
-            volume=volume,
-        )
-        await communicate.save(output_path)
-        return True
+        # Attempt 2: Microsoft edge-tts (Fast, reliable, unlimited)
+        try:
+            import edge_tts
+            rate = self.settings.voice_rate if re.match(r"^[+-]\d+%$", str(self.settings.voice_rate)) else "+0%"
+            volume = self.settings.voice_volume if re.match(r"^[+-]\d+%$", str(self.settings.voice_volume)) else "+0%"
+
+            communicate = edge_tts.Communicate(
+                text=clean_text,
+                voice=self.settings.voice_name,
+                rate=rate,
+                volume=volume,
+            )
+            await communicate.save(output_path)
+            return True
+        except Exception as e:
+            logger.error(f"edge-tts failed: {e}")
+            return False
 
     def _sanitize_text_for_speech(self, text: str) -> str:
         """Clean markdown symbols, code blocks, emojis, and noisy formatting for natural Bangladeshi speech."""

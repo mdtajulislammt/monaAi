@@ -128,7 +128,11 @@ def main():
         action="store_true",
         help="Start in Model Context Protocol (MCP) server mode for Antigravity IDE.",
     )
-
+    parser.add_argument(
+        "--no-browser",
+        action="store_true",
+        help="Do not automatically launch desktop browser window.",
+    )
     args = parser.parse_args()
 
     # Route to MCP server if requested
@@ -168,7 +172,7 @@ def main():
 
     # Default action: Launch Desktop Voice & Text Web UI
     from interfaces.web_ui import run_web_ui
-    run_web_ui(port=args.port)
+    run_web_ui(port=args.port, open_browser=not args.no_browser)
 
 
 if __name__ == "__main__":

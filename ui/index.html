@@ -1,1294 +1,2248 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>monaAi - তোমার পার্সোনাল এআই গার্লফ্রেন্ড 💖</title>
+  <title>J.A.R.V.I.S. // System Core Intelligence</title>
   <link rel="icon" type="image/png" href="/icon.png" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <!-- Markdown parser -->
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
 
   <style>
+    /* ==========================================================================
+       J.A.R.V.I.S. HUD Core Design System & Tokens
+       ========================================================================== */
     :root {
-      --bg-primary: #080b14;
-      --bg-secondary: rgba(18, 24, 38, 0.75);
-      --bg-card: rgba(23, 31, 48, 0.7);
-      --border: rgba(255, 255, 255, 0.08);
-      --border-glow: rgba(99, 102, 241, 0.4);
-      --accent-grad: linear-gradient(135deg, #6366f1 0%, #06b6d4 100%);
-      --accent-purple: #8b5cf6;
-      --accent-cyan: #06b6d4;
-      --accent-green: #10b981;
-      --accent-red: #ef4444;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --text-dim: #64748b;
+      --bg-dark: #040711;
+      --bg-panel: rgba(8, 16, 28, 0.82);
+      --bg-panel-solid: #091220;
+      --bg-card: rgba(12, 22, 38, 0.7);
+      --border-cyan: rgba(0, 240, 255, 0.28);
+      --border-cyan-glow: rgba(0, 240, 255, 0.7);
+      --border-dim: rgba(0, 240, 255, 0.12);
+      
+      --cyan-bright: #00f0ff;
+      --cyan-neon: #00e5ff;
+      --cyan-glow: rgba(0, 240, 255, 0.45);
+      --cyan-muted: #4ba3b8;
+      
+      --amber-warn: #ffb703;
+      --amber-glow: rgba(255, 183, 3, 0.45);
+      
+      --red-alert: #ff2252;
+      --red-glow: rgba(255, 34, 82, 0.5);
+      
+      --green-live: #00ffaa;
+      --text-main: #dcf8ff;
+      --text-dim: #7da5bf;
+      --text-label: #527a94;
+
+      --font-display: 'Orbitron', monospace, sans-serif;
+      --font-body: 'Rajdhani', sans-serif;
+      --font-mono: 'Share Tech Mono', 'JetBrains Mono', monospace;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Hind Siliguri', 'Plus Jakarta Sans', sans-serif;
-      -webkit-font-smoothing: antialiased;
+      user-select: none;
     }
 
     body {
-      background-color: var(--bg-primary);
+      background-color: var(--bg-dark);
       background-image: 
-        radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.15) 0%, transparent 45%),
-        radial-gradient(circle at 85% 85%, rgba(6, 182, 212, 0.12) 0%, transparent 45%);
+        radial-gradient(circle at 50% 45%, rgba(0, 240, 255, 0.07) 0%, transparent 60%),
+        radial-gradient(circle at 10% 20%, rgba(0, 180, 255, 0.04) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(0, 255, 170, 0.03) 0%, transparent 45%),
+        linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 100% 100%, 30px 30px, 30px 30px;
       color: var(--text-main);
+      font-family: var(--font-body);
       height: 100vh;
+      width: 100vw;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
-      overflow: hidden;
+      position: relative;
     }
 
-    /* Top Navigation Bar */
-    header {
-      height: 68px;
-      padding: 0 24px;
+    /* Subtle CRT Scanline overlay */
+    body::after {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(rgba(18, 30, 48, 0) 50%, rgba(0, 0, 0, 0.3) 50%);
+      background-size: 100% 3px;
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0.55;
+    }
+
+    /* Common HUD Box & Cyber Corners */
+    .hud-box {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-cyan);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6), inset 0 0 15px rgba(0, 240, 255, 0.03);
+      backdrop-filter: blur(10px);
+      position: relative;
+      border-radius: 2px;
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .hud-box:hover {
+      border-color: rgba(0, 240, 255, 0.45);
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.7), inset 0 0 20px rgba(0, 240, 255, 0.06);
+    }
+
+    /* Corner Bracket Accents */
+    .hud-box::before, .hud-box::after {
+      content: '';
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-color: var(--cyan-bright);
+      pointer-events: none;
+    }
+    .hud-box::before {
+      top: -1px; left: -1px;
+      border-top: 2px solid var(--cyan-bright);
+      border-left: 2px solid var(--cyan-bright);
+    }
+    .hud-box::after {
+      bottom: -1px; right: -1px;
+      border-bottom: 2px solid var(--cyan-bright);
+      border-right: 2px solid var(--cyan-bright);
+    }
+
+    .box-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid var(--border);
-      background: rgba(8, 11, 20, 0.85);
-      backdrop-filter: blur(14px);
-      z-index: 10;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .logo-badge {
-      width: 42px;
-      height: 42px;
-      border-radius: 12px;
-      background: var(--accent-grad);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
-      font-size: 22px;
-      position: relative;
-      transition: all 0.3s ease;
-    }
-
-    .logo-badge.listening-ring::after {
-      content: '';
-      position: absolute;
-      width: 52px;
-      height: 52px;
-      border-radius: 16px;
-      border: 2px solid var(--accent-cyan);
-      animation: pulseGlow 1.2s infinite;
-    }
-
-    @keyframes pulseGlow {
-      0% { transform: scale(1); opacity: 1; }
-      100% { transform: scale(1.35); opacity: 0; }
-    }
-
-    .brand-text h1 {
-      font-size: 17px;
-      font-weight: 700;
-      letter-spacing: -0.3px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .brand-text p {
-      font-size: 11.5px;
-      color: var(--text-muted);
-    }
-
-    .header-center {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    /* Continuous Listening Mode Toggle */
-    .always-listen-badge {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(16, 185, 129, 0.15);
-      border: 1px solid rgba(16, 185, 129, 0.4);
-      padding: 7px 16px;
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: 600;
-      color: #6ee7b7;
-      cursor: pointer;
-      transition: all 0.25s ease;
-      user-select: none;
-      box-shadow: 0 0 16px rgba(16, 185, 129, 0.2);
-    }
-
-    .always-listen-badge.paused {
-      background: rgba(100, 116, 139, 0.15);
-      border-color: rgba(100, 116, 139, 0.3);
-      color: #94a3b8;
-      box-shadow: none;
-    }
-
-    .always-listen-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--accent-green);
-      box-shadow: 0 0 8px var(--accent-green);
-      animation: blink 1.8s infinite;
-    }
-
-    .always-listen-badge.paused .always-listen-dot {
-      background: #64748b;
-      box-shadow: none;
-      animation: none;
-    }
-
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.25; }
-    }
-
-    /* Voice Dropdown */
-    .voice-select {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      color: var(--text-main);
       padding: 6px 12px;
-      border-radius: 10px;
-      font-size: 12px;
-      font-weight: 500;
-      outline: none;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .voice-select:hover {
-      border-color: var(--border-glow);
-    }
-
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: var(--cyan-bright);
+      border-bottom: 1px solid var(--border-dim);
+      background: rgba(0, 240, 255, 0.04);
+      text-transform: uppercase;
     }
 
-    .btn-icon {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      width: 38px;
-      height: 38px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      font-size: 15px;
-    }
-
-    .btn-icon:hover {
-      background: rgba(255, 255, 255, 0.08);
-      color: var(--text-main);
-      border-color: var(--border-glow);
-    }
-
-    .btn-icon.active {
-      color: var(--accent-cyan);
-      border-color: var(--accent-cyan);
-      background: rgba(6, 182, 212, 0.1);
-    }
-
-    /* Main Chat Container */
-    main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      position: relative;
-    }
-
-    #messages {
-      flex: 1;
-      overflow-y: auto;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      scroll-behavior: smooth;
-    }
-
-    #messages::-webkit-scrollbar {
-      width: 6px;
-    }
-    #messages::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.12);
-      border-radius: 4px;
-    }
-
-    /* Message Bubbles */
-    .msg-row {
-      display: flex;
-      gap: 12px;
-      max-width: 860px;
-      width: 100%;
-      margin: 0 auto;
-      animation: fadeIn 0.25s ease-out forwards;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .msg-row.user {
-      flex-direction: row-reverse;
-    }
-
-    .avatar {
-      width: 38px;
-      height: 38px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      flex-shrink: 0;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-    }
-
-    .msg-row.agent .avatar {
-      background: var(--accent-grad);
-      box-shadow: 0 0 14px rgba(99, 102, 241, 0.4);
-    }
-
-    .msg-content {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      backdrop-filter: blur(14px);
-      padding: 16px 20px;
-      border-radius: 16px;
-      font-size: 14.5px;
-      line-height: 1.65;
-      max-width: 85%;
-      word-break: break-word;
-    }
-
-    .msg-row.user .msg-content {
-      background: linear-gradient(135deg, rgba(99, 102, 241, 0.25) 0%, rgba(6, 182, 212, 0.2) 100%);
-      border-color: rgba(99, 102, 241, 0.4);
-    }
-
-    /* Proactive Question Card */
-    .followup-card {
-      margin-top: 10px;
-      padding: 12px 16px;
-      background: rgba(99, 102, 241, 0.15);
-      border: 1px solid rgba(99, 102, 241, 0.35);
-      border-radius: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .followup-text {
-      font-weight: 600;
-      color: #e0e7ff;
-      font-size: 14px;
-    }
-
-    .followup-chips {
-      display: flex;
-      gap: 8px;
-    }
-
-    .chip-btn {
-      padding: 6px 14px;
-      border-radius: 8px;
-      font-size: 12.5px;
-      font-weight: 600;
-      cursor: pointer;
-      border: none;
-      transition: all 0.2s ease;
-    }
-
-    .chip-btn.yes {
-      background: var(--accent-grad);
-      color: #fff;
-    }
-
-    .chip-btn.no {
-      background: rgba(239, 68, 68, 0.2);
-      color: #fca5a5;
-      border: 1px solid rgba(239, 68, 68, 0.3);
-    }
-
-    .chip-btn:hover {
-      transform: translateY(-1px);
+    .box-header .brackets {
+      color: var(--cyan-bright);
       opacity: 0.9;
     }
 
-    /* Markdown Styling in Responses */
-    .msg-content p { margin-bottom: 8px; }
-    .msg-content p:last-child { margin-bottom: 0; }
-    .msg-content pre {
-      background: #0d1117;
-      padding: 12px;
-      border-radius: 8px;
-      overflow-x: auto;
-      margin: 10px 0;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12.5px;
-    }
-    .msg-content code {
-      font-family: 'JetBrains Mono', monospace;
-      background: rgba(255, 255, 255, 0.08);
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 13px;
-    }
-    .msg-content ul, .msg-content ol {
-      margin-left: 20px;
-      margin-bottom: 8px;
-    }
-
-    /* Tool Execution Card */
-    .tool-card {
-      margin: 8px 0;
-      border-radius: 10px;
-      background: rgba(14, 20, 32, 0.95);
-      border: 1px solid rgba(139, 92, 246, 0.35);
-      font-size: 12px;
-      overflow: hidden;
-    }
-
-    .tool-header {
-      padding: 8px 12px;
-      background: rgba(139, 92, 246, 0.15);
+    /* ==========================================================================
+       Header Bar
+       ========================================================================== */
+    header {
+      height: 48px;
+      padding: 0 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      color: #c4b5fd;
-      font-weight: 600;
-      cursor: pointer;
+      border-bottom: 1px solid var(--border-cyan);
+      background: rgba(5, 10, 20, 0.92);
+      backdrop-filter: blur(14px);
+      z-index: 100;
+      flex-shrink: 0;
     }
 
-    .tool-badge {
-      display: inline-flex;
+    .hdr-left {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+    }
+
+    .brand-title {
+      font-family: var(--font-display);
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: 6px;
+      color: var(--cyan-bright);
+      text-shadow: 0 0 10px var(--cyan-glow), 0 0 20px rgba(0, 240, 255, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .brand-title span.dot {
+      color: var(--green-live);
+      font-size: 14px;
+      margin: 0 2px;
+      animation: dotPulse 2s infinite ease-in-out;
+    }
+
+    .brand-sub {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      color: var(--text-dim);
+      opacity: 0.85;
+    }
+
+    .hdr-right {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 1px;
+    }
+
+    .tele-item {
+      display: flex;
       align-items: center;
       gap: 6px;
-      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-dim);
     }
 
-    .tool-spinner {
-      width: 12px;
-      height: 12px;
-      border: 2px solid #a78bfa;
-      border-top-color: transparent;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
+    .tele-val {
+      color: var(--cyan-bright);
+      font-weight: 700;
     }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+    .cpu-badge {
+      background: rgba(255, 34, 82, 0.15);
+      border: 1px solid var(--red-alert);
+      color: #ff5577;
+      padding: 2px 8px;
+      border-radius: 2px;
+      font-weight: 700;
+      box-shadow: 0 0 8px rgba(255, 34, 82, 0.3);
     }
 
-    .tool-body {
-      padding: 10px 12px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11.5px;
-      color: #94a3b8;
-      max-height: 200px;
-      overflow-y: auto;
-      white-space: pre-wrap;
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    /* Live Speech Preview Pill */
-    #speech-preview {
-      display: none;
-      position: absolute;
-      bottom: 95px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(15, 23, 42, 0.95);
-      border: 1px solid var(--accent-purple);
-      box-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
-      padding: 12px 24px;
-      border-radius: 30px;
+    .clock-display {
+      font-family: var(--font-display);
       font-size: 14px;
-      font-weight: 500;
-      color: #f1f5f9;
-      backdrop-filter: blur(18px);
-      z-index: 20;
+      font-weight: 700;
+      color: var(--cyan-bright);
+      letter-spacing: 2px;
+      text-shadow: 0 0 10px var(--cyan-glow);
+    }
+
+    .status-pill {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(0, 255, 170, 0.1);
+      border: 1px solid var(--green-live);
+      padding: 2px 8px;
+      border-radius: 2px;
+      font-size: 10px;
+      color: var(--green-live);
+      text-shadow: 0 0 6px rgba(0, 255, 170, 0.5);
+    }
+
+    .status-pill .indicator {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green-live);
+      box-shadow: 0 0 8px var(--green-live);
+      animation: livePulse 1.5s infinite;
+    }
+
+    /* ==========================================================================
+       Main 4-Column Layout
+       ========================================================================== */
+    #hud-grid {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 280px 1.4fr 340px 280px;
+      gap: 10px;
+      padding: 10px 14px;
+      overflow: hidden;
+      min-height: 0;
+    }
+
+    /* Left Column */
+    .col-left {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow: hidden;
+    }
+
+    /* Center Column */
+    .col-center {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Center-Right Column (GERÄTE) */
+    .col-mid-right {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow: hidden;
+    }
+
+    /* Right Column */
+    .col-right {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow: hidden;
+    }
+
+    /* ==========================================================================
+       Column 1 Widgets: WETTER, TEMP, RAM, NETZ
+       ========================================================================== */
+    /* Weather Widget */
+    .weather-card {
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .weather-main {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .weather-icon-temp {
+      display: flex;
       align-items: center;
       gap: 12px;
     }
 
-    .pulse-bars {
-      display: flex;
-      align-items: center;
-      gap: 3px;
-      height: 16px;
+    .weather-svg {
+      width: 44px;
+      height: 44px;
+      filter: drop-shadow(0 0 8px var(--cyan-glow));
     }
 
-    .pulse-bar {
-      width: 3px;
-      height: 100%;
-      background: var(--accent-cyan);
-      border-radius: 2px;
-      animation: wave 0.9s ease-in-out infinite;
-    }
-    .pulse-bar:nth-child(2) { animation-delay: 0.15s; }
-    .pulse-bar:nth-child(3) { animation-delay: 0.3s; }
-    .pulse-bar:nth-child(4) { animation-delay: 0.45s; }
-
-    @keyframes wave {
-      0%, 100% { height: 4px; }
-      50% { height: 18px; }
-    }
-
-    /* Input Dock */
-    footer {
-      padding: 16px 24px 22px;
-      display: flex;
-      justify-content: center;
-      background: rgba(8, 11, 20, 0.85);
-      backdrop-filter: blur(14px);
-      border-top: 1px solid var(--border);
-    }
-
-    .input-wrapper {
-      max-width: 860px;
-      width: 100%;
-      display: flex;
-      align-items: center;
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 6px 8px 6px 16px;
-      transition: all 0.25s ease;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    }
-
-    .input-wrapper:focus-within {
-      border-color: var(--border-glow);
-      box-shadow: 0 0 24px rgba(99, 102, 241, 0.35);
-      background: rgba(22, 29, 46, 0.9);
-    }
-
-    #chat-input {
-      flex: 1;
-      background: transparent;
-      border: none;
+    .weather-temp {
+      font-family: var(--font-display);
+      font-size: 32px;
+      font-weight: 700;
       color: var(--text-main);
-      font-size: 15px;
-      outline: none;
-      padding: 8px 6px;
+      line-height: 1;
     }
 
-    #chat-input::placeholder {
+    .weather-desc {
+      font-size: 13px;
+      color: var(--text-dim);
+      font-weight: 500;
+    }
+
+    .weather-substats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-dim);
+      border-top: 1px dashed var(--border-dim);
+      padding-top: 6px;
+    }
+
+    .weather-substats span {
+      color: var(--cyan-bright);
+    }
+
+    .weather-forecast {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+      border-top: 1px solid var(--border-dim);
+      padding-top: 8px;
+    }
+
+    .forecast-day {
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      background: rgba(0, 240, 255, 0.03);
+      padding: 4px 2px;
+      border-radius: 2px;
+    }
+
+    .forecast-day .day-name {
+      color: var(--text-dim);
+      font-size: 9px;
+    }
+
+    .forecast-day .day-temp {
+      color: var(--cyan-bright);
+      font-weight: 700;
+      margin-top: 2px;
+    }
+
+    /* Temp Widget */
+    .temp-card {
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .temp-row {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .temp-labels {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 11px;
       color: var(--text-dim);
     }
 
-    .actions {
+    .temp-val {
+      color: var(--amber-warn);
+      font-weight: 700;
+    }
+
+    .temp-bar-bg {
+      height: 6px;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(0, 240, 255, 0.15);
+      border-radius: 2px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .temp-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #ffb703, #ff4d6d);
+      box-shadow: 0 0 8px rgba(255, 183, 3, 0.6);
+      transition: width 0.6s ease;
+    }
+
+    .temp-bar-fill.cyan {
+      background: linear-gradient(90deg, #00f0ff, #00ffaa);
+      box-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
+    }
+
+    /* RAM Widget */
+    .ram-card {
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .ram-gauge-wrapper {
+      position: relative;
+      width: 78px;
+      height: 78px;
+      flex-shrink: 0;
+    }
+
+    .ram-gauge-svg {
+      transform: rotate(-90deg);
+      width: 100%;
+      height: 100%;
+    }
+
+    .gauge-bg {
+      fill: none;
+      stroke: rgba(0, 240, 255, 0.12);
+      stroke-width: 6;
+    }
+
+    .gauge-fill {
+      fill: none;
+      stroke: var(--cyan-bright);
+      stroke-width: 6;
+      stroke-linecap: round;
+      stroke-dasharray: 201;
+      stroke-dashoffset: 142;
+      filter: drop-shadow(0 0 6px var(--cyan-glow));
+      transition: stroke-dashoffset 0.8s ease;
+    }
+
+    .ram-center-text {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--cyan-bright);
+      text-shadow: 0 0 8px var(--cyan-glow);
+    }
+
+    .ram-stats {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      color: var(--text-dim);
+      flex: 1;
+    }
+
+    .ram-stats div {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .ram-stats span.v {
+      color: var(--cyan-bright);
+      font-weight: 700;
+    }
+
+    /* Network Oscilloscope Widget */
+    .netz-card {
+      padding: 10px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-height: 120px;
+    }
+
+    .netz-rates {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      color: var(--text-dim);
+    }
+
+    .netz-rates span.tx {
+      color: var(--cyan-bright);
+    }
+
+    .netz-rates span.rx {
+      color: #ff33bb;
+    }
+
+    #network-canvas {
+      width: 100%;
+      height: 90px;
+      background: rgba(4, 9, 18, 0.7);
+      border: 1px solid var(--border-dim);
+      border-radius: 2px;
+    }
+
+    /* ==========================================================================
+       Column 2: Massive Arc Reactor Core HUD & Terminal Console
+       ========================================================================== */
+    .reactor-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 20px 10px 10px;
+    }
+
+    .reactor-visual-area {
+      position: relative;
+      width: 380px;
+      height: 380px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* SVG Layered Rotating Rings */
+    .reactor-svg-layer {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+    }
+
+    .ring-outer-clock {
+      transform-origin: 190px 190px;
+      animation: rotateClock 50s linear infinite;
+    }
+
+    .ring-mid-counter {
+      transform-origin: 190px 190px;
+      animation: rotateCounter 32s linear infinite;
+    }
+
+    .ring-inner-fast {
+      transform-origin: 190px 190px;
+      animation: rotateClock 18s linear infinite;
+    }
+
+    .ring-hexagon {
+      transform-origin: 190px 190px;
+      animation: rotateCounter 60s linear infinite;
+    }
+
+    /* Central Plasma Core */
+    .core-orb {
+      position: absolute;
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #ffffff 10%, #00f0ff 45%, rgba(0, 229, 255, 0.4) 70%, transparent 85%);
+      box-shadow: 
+        0 0 25px rgba(0, 240, 255, 0.8),
+        0 0 50px rgba(0, 240, 255, 0.5),
+        inset 0 0 20px #ffffff;
+      animation: plasmaBreathing 3s infinite ease-in-out;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .core-orb:hover {
+      transform: scale(1.12);
+      box-shadow: 
+        0 0 40px rgba(0, 240, 255, 1),
+        0 0 80px rgba(0, 240, 255, 0.7),
+        inset 0 0 25px #ffffff;
+    }
+
+    .core-orb:active {
+      transform: scale(0.95);
+    }
+
+    .core-orb-center-dot {
+      width: 22px;
+      height: 22px;
+      background: #ffffff;
+      border-radius: 50%;
+      box-shadow: 0 0 15px #ffffff;
+    }
+
+    /* Radial Sonar Wave Ripples */
+    .sonar-wave {
+      position: absolute;
+      border: 1px solid var(--cyan-bright);
+      border-radius: 50%;
+      pointer-events: none;
+      animation: sonarPing 3.5s infinite cubic-bezier(0.1, 0.45, 0.1, 1);
+    }
+    .sonar-wave:nth-child(2) { animation-delay: 1.2s; }
+    .sonar-wave:nth-child(3) { animation-delay: 2.4s; }
+
+    /* Reactor Footer / Command Status */
+    .reactor-status-banner {
+      margin-top: 10px;
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      color: var(--cyan-bright);
+      text-shadow: 0 0 10px var(--cyan-glow);
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    /* Interactive Command & Voice Bar */
+    .reactor-cmd-bar {
+      width: 100%;
+      max-width: 520px;
+      margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .cmd-input-container {
+      display: flex;
+      align-items: center;
+      background: rgba(5, 12, 22, 0.88);
+      border: 1px solid var(--cyan-bright);
+      box-shadow: 0 0 14px rgba(0, 240, 255, 0.25), inset 0 0 10px rgba(0, 240, 255, 0.05);
+      border-radius: 2px;
+      padding: 2px 6px;
+      position: relative;
+    }
+
+    .cmd-prefix {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--cyan-bright);
+      padding: 0 8px;
+      font-weight: 700;
+    }
+
+    #cmd-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #ffffff;
+      font-family: var(--font-body);
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      padding: 8px 4px;
+    }
+
+    #cmd-input::placeholder {
+      color: var(--text-label);
+      font-style: italic;
+      font-size: 13px;
+    }
+
+    .btn-mic, .btn-send {
+      background: rgba(0, 240, 255, 0.1);
+      border: 1px solid var(--border-cyan);
+      color: var(--cyan-bright);
+      padding: 6px 10px;
+      border-radius: 2px;
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .btn-mic:hover, .btn-send:hover {
+      background: rgba(0, 240, 255, 0.25);
+      box-shadow: 0 0 10px var(--cyan-glow);
+      color: #ffffff;
+    }
+
+    .btn-mic.active {
+      background: rgba(255, 34, 82, 0.3);
+      border-color: var(--red-alert);
+      color: #ff5577;
+      animation: pulseMic 1.2s infinite;
+    }
+
+    /* Live Output HUD display */
+    .agent-response-feed {
+      max-height: 90px;
+      overflow-y: auto;
+      background: rgba(3, 8, 16, 0.7);
+      border: 1px dashed var(--border-dim);
+      padding: 6px 10px;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      color: var(--text-main);
+      line-height: 1.4;
+      border-radius: 2px;
+      display: none;
+    }
+
+    .agent-response-feed.active {
+      display: block;
+    }
+
+    /* ==========================================================================
+       Column 3: GERÄTE (Connected Devices & System Alerts)
+       ========================================================================== */
+    .col-mid-right {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .col-mid-right .hud-box {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .devices-scroll-feed {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .device-card {
+      background: rgba(10, 19, 32, 0.75);
+      border: 1px solid rgba(0, 240, 255, 0.16);
+      border-radius: 2px;
+      padding: 8px 10px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .device-card:hover {
+      transform: translateX(3px);
+      border-color: var(--cyan-bright);
+    }
+
+    .device-card.warn-card {
+      border-color: rgba(255, 183, 3, 0.4);
+      background: rgba(28, 20, 8, 0.6);
+    }
+
+    .device-card.alert-card {
+      border-color: rgba(255, 34, 82, 0.4);
+      background: rgba(28, 10, 16, 0.6);
+    }
+
+    .device-title {
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .device-title.warn { color: var(--amber-warn); }
+    .device-title.alert { color: #ff5577; }
+    .device-title.cyan { color: var(--cyan-bright); }
+
+    .device-sub {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-dim);
+    }
+
+    /* Red highlight bar matching the photo */
+    .bar-strip {
+      height: 4px;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 1px;
+      margin-top: 4px;
+      overflow: hidden;
+    }
+
+    .bar-strip-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #ff2252, #ff5577);
+      box-shadow: 0 0 6px rgba(255, 34, 82, 0.6);
+    }
+
+    .bar-strip-fill.amber {
+      background: linear-gradient(90deg, #ffb703, #ffd166);
+      box-shadow: 0 0 6px rgba(255, 183, 3, 0.6);
+    }
+
+    .bar-strip-fill.cyan {
+      background: linear-gradient(90deg, #00f0ff, #00ffaa);
+      box-shadow: 0 0 6px rgba(0, 240, 255, 0.6);
+    }
+
+    /* ==========================================================================
+       Column 4: DEBUG-LOG, MÄRKTE, BRIEFING, NETZ-KARTE
+       ========================================================================== */
+    .debug-log-card {
+      height: 115px;
+      padding: 8px 10px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--green-live);
+      overflow-y: auto;
+      line-height: 1.45;
+      background: rgba(4, 9, 16, 0.9);
+      display: flex;
+      flex-direction: column-reverse;
+    }
+
+    .log-entry {
+      margin-bottom: 2px;
+      word-break: break-all;
+    }
+
+    .log-entry span.time {
+      color: var(--text-dim);
+      margin-right: 4px;
+    }
+
+    .market-card {
+      padding: 8px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+
+    .market-item {
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-dim);
+    }
+
+    .market-item span.up {
+      color: var(--green-live);
+      font-weight: 700;
+    }
+
+    .briefing-card {
+      padding: 8px 12px;
+      font-family: var(--font-body);
+      font-size: 12px;
+      color: var(--text-dim);
+      line-height: 1.35;
+    }
+
+    /* Radar Network Topology Map */
+    .radar-card {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      min-height: 170px;
+      overflow: hidden;
+      padding: 6px;
+    }
+
+    .radar-screen {
+      position: relative;
+      width: 170px;
+      height: 170px;
+      border-radius: 50%;
+      border: 1px solid rgba(0, 240, 255, 0.35);
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.1), inset 0 0 20px rgba(0, 240, 255, 0.05);
+      background: radial-gradient(circle, rgba(0, 240, 255, 0.05) 0%, rgba(4, 9, 18, 0.8) 80%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Rotating Radar Sweep Beam */
+    .radar-sweep-beam {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg, transparent 70%, rgba(0, 240, 255, 0.25) 96%, rgba(0, 240, 255, 0.6) 100%);
+      animation: radarScan 4s linear infinite;
+      pointer-events: none;
+    }
+
+    .radar-rings-svg {
+      position: absolute;
+      width: 100%; height: 100%;
+      pointer-events: none;
+    }
+
+    .radar-center-hub {
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      background: rgba(0, 240, 255, 0.2);
+      border: 1.5px solid var(--cyan-bright);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--cyan-bright);
+      z-index: 5;
+    }
+
+    .radar-node-blip {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--cyan-bright);
+      box-shadow: 0 0 8px var(--cyan-bright);
+      z-index: 4;
+      animation: blipPulse 2s infinite ease-in-out;
+    }
+
+    /* ==========================================================================
+       Footer Control Dock
+       ========================================================================== */
+    footer {
+      height: 38px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--border-cyan);
+      background: rgba(4, 8, 16, 0.95);
+      backdrop-filter: blur(14px);
+      z-index: 100;
+      flex-shrink: 0;
+    }
+
+    .dock-buttons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+    }
+
+    .dock-btn {
+      background: rgba(0, 240, 255, 0.05);
+      border: 1px solid var(--border-cyan);
+      color: var(--text-dim);
+      font-family: var(--font-display);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      padding: 4px 10px;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .dock-btn:hover, .dock-btn.active {
+      background: rgba(0, 240, 255, 0.2);
+      border-color: var(--cyan-bright);
+      color: #ffffff;
+      box-shadow: 0 0 10px var(--cyan-glow);
+    }
+
+    .dock-branding {
+      font-family: var(--font-display);
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--cyan-bright);
+      opacity: 0.8;
       display: flex;
       align-items: center;
       gap: 8px;
     }
 
-    /* Voice Button */
-    #btn-voice {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--text-muted);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.25s ease;
-      font-size: 19px;
+    /* ==========================================================================
+       Animations
+       ========================================================================== */
+    @keyframes rotateClock {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
     }
 
-    #btn-voice:hover {
-      background: rgba(255, 255, 255, 0.1);
-      color: var(--text-main);
+    @keyframes rotateCounter {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(-360deg); }
     }
 
-    #btn-voice.active-listening {
-      background: var(--accent-green);
-      color: #fff;
-      border-color: #34d399;
-      box-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
-      animation: pulseGreen 1.6s infinite;
+    @keyframes plasmaBreathing {
+      0%, 100% {
+        transform: scale(1);
+        filter: drop-shadow(0 0 20px rgba(0, 240, 255, 0.7));
+      }
+      50% {
+        transform: scale(1.08);
+        filter: drop-shadow(0 0 38px rgba(0, 240, 255, 0.95)) drop-shadow(0 0 60px rgba(0, 255, 200, 0.4));
+      }
     }
 
-    @keyframes pulseGreen {
-      0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6); }
-      70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
-      100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    @keyframes sonarPing {
+      0% {
+        width: 60px; height: 60px;
+        opacity: 0.85;
+        border-width: 2px;
+      }
+      100% {
+        width: 360px; height: 360px;
+        opacity: 0;
+        border-width: 0.5px;
+      }
     }
 
-    /* Send Button */
-    #btn-send {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      border: none;
-      background: var(--accent-grad);
-      color: #fff;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s ease;
-      box-shadow: 0 0 16px rgba(99, 102, 241, 0.4);
-      font-size: 17px;
+    @keyframes radarScan {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
     }
 
-    #btn-send:hover {
-      opacity: 0.92;
-      transform: translateY(-1px);
+    @keyframes blipPulse {
+      0%, 100% { opacity: 0.4; transform: scale(0.9); }
+      50% { opacity: 1; transform: scale(1.2); }
     }
 
-    #btn-send:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-      transform: none;
+    @keyframes livePulse {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    @keyframes dotPulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; text-shadow: 0 0 8px var(--green-live); }
+    }
+
+    @keyframes pulseMic {
+      0%, 100% { box-shadow: 0 0 4px var(--red-alert); }
+      50% { box-shadow: 0 0 16px var(--red-alert); }
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.2);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(0, 240, 255, 0.3);
+      border-radius: 2px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--cyan-bright);
     }
   </style>
 </head>
+
 <body>
 
-  <!-- Top Header -->
+  <!-- Top Header Bar -->
   <header>
-    <div class="brand">
-      <div class="logo-badge" id="app-logo">
-        <img src="/icon.png" alt="Mona" style="width:100%; height:100%; border-radius:12px; object-fit:cover;" />
+    <div class="hdr-left">
+      <div class="brand-title">
+        J<span class="dot">•</span>A<span class="dot">•</span>R<span class="dot">•</span>V<span class="dot">•</span>I<span class="dot">•</span>S<span class="dot">•</span>
       </div>
-      <div class="brand-text">
-        <h1>monaAi (মোনা) 💖</h1>
-        <p>তোমার পার্সোনাল এআই গার্লফ্রেন্ড ও পিসি অ্যাসিস্ট্যান্ট</p>
-      </div>
+      <div class="brand-sub">VR 2026 // SYSTEM CORE INTELLIGENCE SYSTEM</div>
     </div>
 
-    <div class="header-center">
-      <!-- Always-On Voice Toggle -->
-      <div class="always-listen-badge" id="btn-always-listen" title="ক্লিক করে অলওয়েজ-অন ভয়েস অন/অফ করুন">
-        <div class="always-listen-dot"></div>
-        <span id="listen-status-text">ভয়েস সবসময় শুনছে</span>
+    <div class="hdr-right">
+      <div class="tele-item">HOST: <span class="tele-val">JARVIS-BOARD</span></div>
+      <div class="cpu-badge" id="hdr-cpu-badge">CPU 24%</div>
+      <div class="tele-item"><span id="hdr-procs">142</span> PROCS</div>
+      <div class="tele-item">STATUS: <span class="tele-val" id="hdr-state">IDLE</span></div>
+      <div class="status-pill" id="btn-voice-toggle" style="cursor: pointer; border-color: rgba(0, 240, 255, 0.4); background: rgba(0, 240, 255, 0.08);" title="ক্লিক করে সর্বদা সক্রিয় মোড টগল করুন">
+        <span class="indicator" id="voice-indicator" style="background: #00ffaa;"></span>
+        <span id="voice-mode-label">MIC: CONTINUOUS</span>
       </div>
-
-      <!-- Real Bangladeshi Neural Voice Selector -->
-      <select id="select-voice" class="voice-select" title="ভয়েসের কণ্ঠ নির্বাচন করুন">
-        <option value="bn-BD-NabanitaNeural">👩 মোনা (মিষ্টি ও রোমান্টিক কণ্ঠ)</option>
-        <option value="bn-BD-PradeepNeural">👨 প্রদীপ (বাংলাদেশি কণ্ঠ)</option>
-      </select>
-    </div>
-
-    <div class="header-actions">
-      <button class="btn-icon active" id="btn-tts" title="ভয়েস অডিও অন/অফ করুন">🔊</button>
-      <button class="btn-icon" id="btn-reset" title="কথোপকথন মেমোরি ক্লিয়ার করুন">🔄</button>
+      <div class="clock-display" id="hdr-clock">09:17:08</div>
+      <button class="dock-btn" id="btn-fullscreen" title="Toggle Fullscreen">⛶</button>
+      <button class="dock-btn" id="btn-sound" title="Toggle Cyber Sound Effects">🔊</button>
     </div>
   </header>
 
-  <!-- Live Audio Waveform Preview -->
-  <div id="speech-preview">
-    <div class="pulse-bars">
-      <div class="pulse-bar"></div>
-      <div class="pulse-bar"></div>
-      <div class="pulse-bar"></div>
-      <div class="pulse-bar"></div>
-    </div>
-    <span id="speech-preview-text">হ্যাঁ জান, বলো আমি শুনছি...</span>
-  </div>
+  <!-- Main 4-Column HUD Grid -->
+  <main id="hud-grid">
 
-  <!-- Messages Container -->
-  <main>
-    <div id="messages">
-      <!-- Welcome Message -->
-      <div class="msg-row agent">
-        <div class="avatar">💖</div>
-        <div class="msg-content">
-          <p><strong>হ্যাঁ জান, বলো আমি শুনছি ❤️</strong></p>
+    <!-- ==================== COLUMN 1: LEFT GAUGES ==================== -->
+    <div class="col-left">
+
+      <!-- WETTER / WEATHER -->
+      <div class="hud-box" id="widget-wetter">
+        <div class="box-header">
+          <span><span class="brackets">[</span> WETTER <span class="brackets">]</span></span>
+          <span style="font-size: 9px; opacity: 0.7;">DHAKA, BD</span>
+        </div>
+        <div class="weather-card">
+          <div class="weather-main">
+            <div class="weather-icon-temp">
+              <!-- Animated Weather Cloud SVG -->
+              <svg class="weather-svg" viewBox="0 0 64 64">
+                <path d="M46 38c0-5.5-4.5-10-10-10-1.2 0-2.3.2-3.4.6C31 23.3 26 19 20 19c-7.2 0-13 5.8-13 13 0 1 .1 1.9.3 2.8C4.5 36.1 2 39.7 2 44c0 5.5 4.5 10 10 10h34c6.6 0 12-5.4 12-12 0-5.7-4-10.5-9.5-11.7.3-1.1.5-2.3.5-3.3 0-5-4-9-9-9z" fill="none" stroke="#00f0ff" stroke-width="2.5" stroke-linecap="round" />
+                <path d="M22 58l-3 6M34 58l-3 6M46 58l-3 6" stroke="#00ffaa" stroke-width="2.5" stroke-linecap="round" />
+              </svg>
+              <div>
+                <div class="weather-temp" id="val-temp">25°</div>
+                <div class="weather-desc" id="val-weather-desc">Bedeckt / Wolkig</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="weather-substats">
+            <div>LUFTFEUCHTE: <span id="val-humidity">62%</span></div>
+            <div>WIND: <span id="val-wind">11 km/h</span></div>
+            <div>SONNE: <span>06:12 - 18:24</span></div>
+            <div>DRUCK: <span>1014 hPa</span></div>
+          </div>
+
+          <div class="weather-forecast">
+            <div class="forecast-day">
+              <div class="day-name">MON</div>
+              <div class="day-temp">27°/19°</div>
+            </div>
+            <div class="forecast-day">
+              <div class="day-name">DIE</div>
+              <div class="day-temp">26°/18°</div>
+            </div>
+            <div class="forecast-day">
+              <div class="day-name">MIT</div>
+              <div class="day-temp">25°/17°</div>
+            </div>
+            <div class="forecast-day">
+              <div class="day-name">DON</div>
+              <div class="day-temp">23°/16°</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TEMP / HARDWARE TEMPERATURES -->
+      <div class="hud-box" id="widget-temp">
+        <div class="box-header">
+          <span><span class="brackets">[</span> TEMP <span class="brackets">]</span></span>
+          <span style="font-size: 9px; opacity: 0.7;">SENSORS</span>
+        </div>
+        <div class="temp-card">
+          <div class="temp-row">
+            <div class="temp-labels">
+              <span>CPU</span>
+              <span class="temp-val" id="val-temp-cpu">42.4°C</span>
+            </div>
+            <div class="temp-bar-bg">
+              <div class="temp-bar-fill" id="bar-temp-cpu" style="width: 44%;"></div>
+            </div>
+          </div>
+
+          <div class="temp-row">
+            <div class="temp-labels">
+              <span>GPU</span>
+              <span class="temp-val" id="val-temp-gpu">39.2°C</span>
+            </div>
+            <div class="temp-bar-bg">
+              <div class="temp-bar-fill" id="bar-temp-gpu" style="width: 38%;"></div>
+            </div>
+          </div>
+
+          <div class="temp-row">
+            <div class="temp-labels">
+              <span>DISK</span>
+              <span class="temp-val" id="val-temp-disk">41.5°C</span>
+            </div>
+            <div class="temp-bar-bg">
+              <div class="temp-bar-fill cyan" id="bar-temp-disk" style="width: 42%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RAM / MEMORY -->
+      <div class="hud-box" id="widget-ram">
+        <div class="box-header">
+          <span><span class="brackets">[</span> RAM <span class="brackets">]</span></span>
+          <span style="font-size: 9px; opacity: 0.7;">DDR5 V-MEM</span>
+        </div>
+        <div class="ram-card">
+          <div class="ram-gauge-wrapper">
+            <svg class="ram-gauge-svg" viewBox="0 0 78 78">
+              <circle class="gauge-bg" cx="39" cy="39" r="32" />
+              <circle class="gauge-fill" id="ram-svg-fill" cx="39" cy="39" r="32" />
+            </svg>
+            <div class="ram-center-text" id="val-ram-pct">29%</div>
+          </div>
+
+          <div class="ram-stats">
+            <div><span>TOTAL:</span> <span class="v" id="val-ram-total">16.0 GB</span></div>
+            <div><span>USED:</span> <span class="v" id="val-ram-used">4.6 GB</span></div>
+            <div><span>FREE:</span> <span class="v" id="val-ram-free">11.4 GB</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NETZ / NETWORK OSCILLOSCOPE -->
+      <div class="hud-box netz-card" id="widget-netz">
+        <div class="box-header" style="margin: -10px -10px 0 -10px;">
+          <span><span class="brackets">[</span> NETZ <span class="brackets">]</span></span>
+          <span style="font-size: 9px; opacity: 0.7;">OSCILLOSCOPE</span>
+        </div>
+        <div class="netz-rates">
+          <div>TX: <span class="tx" id="val-net-tx">182 kb/s</span></div>
+          <div>RX: <span class="rx" id="val-net-rx">1.4 mb/s</span></div>
+        </div>
+        <canvas id="network-canvas" width="260" height="90"></canvas>
+      </div>
+
+    </div>
+
+
+    <!-- ==================== COLUMN 2: ARC REACTOR CORE HUD ==================== -->
+    <div class="col-center hud-box" id="widget-reaktor">
+      <div class="box-header" style="width: 100%;">
+        <span><span class="brackets">[</span> REAKTOR // CORE INTELLIGENCE <span class="brackets">]</span></span>
+        <span style="font-size: 9px; opacity: 0.7;">MK-VII AUTONOMOUS</span>
+      </div>
+
+      <div class="reactor-container">
+        <!-- Visual Rotating HUD Reactor Layer -->
+        <div class="reactor-visual-area" id="reactor-core-hub">
+          <!-- Sonar Expanding Ripples -->
+          <div class="sonar-wave"></div>
+          <div class="sonar-wave"></div>
+          <div class="sonar-wave"></div>
+
+          <!-- SVG Layer with Layered Concentric Rings -->
+          <svg class="reactor-svg-layer" viewBox="0 0 380 380">
+            <!-- Compass Crosshairs -->
+            <line x1="190" y1="10" x2="190" y2="45" stroke="rgba(0,240,255,0.4)" stroke-width="1.5" />
+            <line x1="190" y1="335" x2="190" y2="370" stroke="rgba(0,240,255,0.4)" stroke-width="1.5" />
+            <line x1="10" y1="190" x2="45" y2="190" stroke="rgba(0,240,255,0.4)" stroke-width="1.5" />
+            <line x1="335" y1="190" x2="370" y2="190" stroke="rgba(0,240,255,0.4)" stroke-width="1.5" />
+
+            <!-- Degree Labels -->
+            <text x="190" y="25" fill="#00f0ff" font-family="'Share Tech Mono'" font-size="9" text-anchor="middle">0°</text>
+            <text x="360" y="193" fill="#00f0ff" font-family="'Share Tech Mono'" font-size="9" text-anchor="middle">90°</text>
+            <text x="190" y="362" fill="#00f0ff" font-family="'Share Tech Mono'" font-size="9" text-anchor="middle">180°</text>
+            <text x="22" y="193" fill="#00f0ff" font-family="'Share Tech Mono'" font-size="9" text-anchor="middle">270°</text>
+
+            <!-- Outer Degree Ring (Clockwise) -->
+            <g class="ring-outer-clock">
+              <circle cx="190" cy="190" r="165" fill="none" stroke="rgba(0,240,255,0.25)" stroke-width="1" />
+              <circle cx="190" cy="190" r="158" fill="none" stroke="rgba(0,240,255,0.6)" stroke-width="2" stroke-dasharray="4 16" />
+              <circle cx="190" cy="190" r="148" fill="none" stroke="rgba(0,240,255,0.3)" stroke-width="1" />
+            </g>
+
+            <!-- Middle Notched Segment Ring (Counter-Clockwise) -->
+            <g class="ring-mid-counter">
+              <circle cx="190" cy="190" r="132" fill="none" stroke="rgba(0,240,255,0.45)" stroke-width="5" stroke-dasharray="18 10 3 10" />
+              <circle cx="190" cy="190" r="115" fill="none" stroke="rgba(0,255,170,0.5)" stroke-width="1.5" stroke-dasharray="6 30" />
+            </g>
+
+            <!-- Inner Fast Ring (Clockwise) -->
+            <g class="ring-inner-fast">
+              <circle cx="190" cy="190" r="95" fill="none" stroke="#00f0ff" stroke-width="2" stroke-dasharray="35 15" />
+              <circle cx="190" cy="190" r="82" fill="none" stroke="rgba(0,240,255,0.4)" stroke-width="1" stroke-dasharray="2 6" />
+            </g>
+
+            <!-- Hexagonal Tech Ring (Counter-Clockwise) -->
+            <g class="ring-hexagon">
+              <polygon points="190,120 250,155 250,225 190,260 130,225 130,155" fill="none" stroke="#00f0ff" stroke-width="2" stroke-dasharray="8 8" />
+              <circle cx="190" cy="120" r="3" fill="#00f0ff" />
+              <circle cx="250" cy="155" r="3" fill="#00f0ff" />
+              <circle cx="250" cy="225" r="3" fill="#00f0ff" />
+              <circle cx="190" cy="260" r="3" fill="#00f0ff" />
+              <circle cx="130" cy="225" r="3" fill="#00f0ff" />
+              <circle cx="130" cy="155" r="3" fill="#00f0ff" />
+            </g>
+          </svg>
+
+          <!-- Central Pulsing Plasma Core Button -->
+          <div class="core-orb" id="core-interactive-orb" title="Click to trigger voice listening or activate core!">
+            <div class="core-orb-center-dot"></div>
+          </div>
+        </div>
+
+        <!-- Reactor Subtitle -->
+        <div class="reactor-status-banner" id="reactor-status-text">
+          BEREIT FÜR BEFEHLE // READY FOR COMMANDS
+        </div>
+
+        <!-- Interactive Command & Voice Bar -->
+        <div class="reactor-cmd-bar">
+          <form id="cmd-form" class="cmd-input-container">
+            <span class="cmd-prefix">J.A.R.V.I.S.&gt;</span>
+            <input type="text" id="cmd-input" placeholder="কমান্ড টাইপ করুন অথবা কথা বলুন (যেমন: 'ফাহিমকে টেলিগ্রামে নক দাও')..." autocomplete="off" />
+            <button type="button" class="btn-mic" id="btn-mic" title="Voice Input (Speech Recognition)">
+              <span>🎤</span>
+            </button>
+            <button type="submit" class="btn-send" id="btn-send">
+              <span>SEND ↵</span>
+            </button>
+          </form>
+
+          <!-- Terminal Output Feed -->
+          <div class="agent-response-feed" id="agent-response-feed">
+            <div id="response-content">SYSTEM ONLINE. J.A.R.V.I.S. প্রস্তুত রয়েছে স্যার। নির্দেশ দিন।</div>
+          </div>
         </div>
       </div>
     </div>
+
+
+    <!-- ==================== COLUMN 3: GERÄTE & SYSTEM EVENTS ==================== -->
+    <div class="col-mid-right">
+      <div class="hud-box" id="widget-geraete">
+        <div class="box-header">
+          <span><span class="brackets">[</span> GERÄTE <span class="brackets">]</span></span>
+          <div style="display: flex; gap: 6px;">
+            <span style="color: var(--amber-warn); cursor: pointer;">[ OFFEN : 6 ]</span>
+            <span style="color: var(--cyan-bright); cursor: pointer;" id="btn-ack-all">[ ALLE BESTÄTIGEN ]</span>
+          </div>
+        </div>
+
+        <div class="devices-scroll-feed" id="devices-feed">
+          <!-- Card 1: Hitzewarnung (Yellow highlight) -->
+          <div class="device-card warn-card">
+            <div class="device-title warn">
+              <span>⚠️ Hitzewarnung 2026-09-21</span>
+              <span>NOMINAL</span>
+            </div>
+            <div class="device-sub">CPU Temp 42.4°C — Lüfterdrehzahl automatisch angepasst</div>
+            <div class="bar-strip">
+              <div class="bar-strip-fill amber" style="width: 65%;"></div>
+            </div>
+          </div>
+
+          <!-- Card 2: Neues Gerät (Red bar highlight matching photo) -->
+          <div class="device-card alert-card">
+            <div class="device-title alert">
+              <span>🔴 Neues Gerät im Netzwerk: Google Nest Mini</span>
+              <span>ONLINE</span>
+            </div>
+            <div class="device-sub">IP: 192.168.1.104 // MAC: D4:61:9D:88:21:40</div>
+            <div class="bar-strip">
+              <div class="bar-strip-fill" style="width: 90%;"></div>
+            </div>
+          </div>
+
+          <!-- Card 3: Neues Gerät (Smart Display) -->
+          <div class="device-card alert-card">
+            <div class="device-title alert">
+              <span>🔴 Neues Gerät im Netzwerk: Living Room Display</span>
+              <span>192.168.1.115</span>
+            </div>
+            <div class="device-sub">IoT Gateway Bridge // Port 8008 Open</div>
+            <div class="bar-strip">
+              <div class="bar-strip-fill" style="width: 78%;"></div>
+            </div>
+          </div>
+
+          <!-- Card 4: Smartphone Telegram Bridge -->
+          <div class="device-card alert-card">
+            <div class="device-title alert">
+              <span>🔴 Neues Gerät im Netzwerk: Smartphone (Fahim)</span>
+              <span>CONNECTED</span>
+            </div>
+            <div class="device-sub">Telegram Desktop API Integration: ACTIVE</div>
+            <div class="bar-strip">
+              <div class="bar-strip-fill" style="width: 85%;"></div>
+            </div>
+          </div>
+
+          <!-- Card 5: Gateway -->
+          <div class="device-card alert-card">
+            <div class="device-title alert">
+              <span>🔴 Neues Gerät im Netzwerk: Router Gateway</span>
+              <span>192.168.1.1</span>
+            </div>
+            <div class="device-sub">Gigabit Optical Fiber // Latency: 4ms</div>
+            <div class="bar-strip">
+              <div class="bar-strip-fill" style="width: 92%;"></div>
+            </div>
+          </div>
+
+          <!-- Card 6: Workstation KDE Plasma -->
+          <div class="device-card alert-card">
+            <div class="device-title alert">
+              <span>🔴 Neues Gerät im Netzwerk: Workstation PC</span>
+              <span>LINUX 6.18</span>
+            </div>
+            <div class="device-sub">KDE Plasma Wayland // Multi-Monitor 3840x1080</div>
+            <div class="bar-strip">
+              <div class="bar-strip-fill" style="width: 88%;"></div>
+            </div>
+          </div>
+
+          <!-- Card 7: Screen Vision Status (Cyan bar) -->
+          <div class="device-card">
+            <div class="device-title cyan">
+              <span>👁️ Multi-modal Screen Vision Driver</span>
+              <span>ACTIVE</span>
+            </div>
+            <div class="device-sub">Spectacle Native Engine // Zero-Lag Full Screen Inspection</div>
+            <div class="bar-strip">
+              <div class="bar-strip-fill cyan" style="width: 100%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ==================== COLUMN 4: RIGHT WIDGETS ==================== -->
+    <div class="col-right">
+
+      <!-- DEBUG-LOG -->
+      <div class="hud-box" id="widget-debug-log" style="display: flex; flex-direction: column;">
+        <div class="box-header">
+          <span><span class="brackets">[</span> DEBUG-LOG <span class="brackets">]</span></span>
+          <span style="font-size: 9px; opacity: 0.7;">LIVE TTY</span>
+        </div>
+        <div class="debug-log-card" id="debug-log-container">
+          <!-- Populated by JS -->
+          <div class="log-entry"><span class="time">[09:17:08]</span>&gt; Awaiting voice or terminal command...</div>
+          <div class="log-entry"><span class="time">[09:17:06]</span>&gt; Screen Vision Spectacle Driver: Ready.</div>
+          <div class="log-entry"><span class="time">[09:17:04]</span>&gt; Neural Bangladeshi Voice: bn-BD active.</div>
+          <div class="log-entry"><span class="time">[09:17:01]</span>&gt; J.A.R.V.I.S. Core boot sequence complete.</div>
+        </div>
+      </div>
+
+      <!-- MÄRKTE / TELEMETRY -->
+      <div class="hud-box" id="widget-maerkte">
+        <div class="box-header">
+          <span><span class="brackets">[</span> MÄRKTE <span class="brackets">]</span></span>
+          <span style="font-size: 9px; opacity: 0.7;">FINANCE // API</span>
+        </div>
+        <div class="market-card">
+          <div class="market-item">
+            <span>S&amp;P 500:</span>
+            <span class="up">5,860 USD ▲ +0.6%</span>
+          </div>
+          <div class="market-item">
+            <span>BITCOIN:</span>
+            <span class="up">$91,420 ▲ +2.4%</span>
+          </div>
+          <div class="market-item">
+            <span>GEMINI API:</span>
+            <span style="color: var(--cyan-bright);">120ms (FAST)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- BRIEFING -->
+      <div class="hud-box" id="widget-briefing">
+        <div class="box-header">
+          <span><span class="brackets">[</span> BRIEFING <span class="brackets">]</span></span>
+          <span style="font-size: 9px; opacity: 0.7;">STATUS</span>
+        </div>
+        <div class="briefing-card">
+          <div style="color: var(--text-main); font-weight: 600; margin-bottom: 2px;">Kein aktives Briefing verfügbar.</div>
+          <div>All workstation automation subsystems are online and operating at maximum efficiency.</div>
+        </div>
+      </div>
+
+      <!-- NETZ-KARTE / RADAR TOPOLOGY -->
+      <div class="hud-box radar-card" id="widget-netz-karte">
+        <div class="box-header" style="position: absolute; top: 0; left: 0; right: 0;">
+          <span><span class="brackets">[</span> NETZ-KARTE <span class="brackets">]</span></span>
+          <span style="font-size: 9px; opacity: 0.7;">RADAR</span>
+        </div>
+
+        <div class="radar-screen" style="margin-top: 18px;">
+          <!-- Radar Sweep Beam -->
+          <div class="radar-sweep-beam"></div>
+
+          <!-- Radar Concentric Rings & Crosshair Lines -->
+          <svg class="radar-rings-svg" viewBox="0 0 170 170">
+            <circle cx="85" cy="85" r="70" fill="none" stroke="rgba(0,240,255,0.2)" stroke-width="1" />
+            <circle cx="85" cy="85" r="48" fill="none" stroke="rgba(0,240,255,0.25)" stroke-width="1" stroke-dasharray="3 3" />
+            <circle cx="85" cy="85" r="26" fill="none" stroke="rgba(0,240,255,0.3)" stroke-width="1" />
+            <line x1="85" y1="15" x2="85" y2="155" stroke="rgba(0,240,255,0.2)" stroke-width="0.7" />
+            <line x1="15" y1="85" x2="155" y2="85" stroke="rgba(0,240,255,0.2)" stroke-width="0.7" />
+
+            <!-- Connecting Topology Dashed Lines from Center Hub to Nodes -->
+            <line x1="85" y1="85" x2="35" y2="40" stroke="rgba(0,240,255,0.4)" stroke-dasharray="2 3" />
+            <line x1="85" y1="85" x2="135" y2="45" stroke="rgba(0,240,255,0.4)" stroke-dasharray="2 3" />
+            <line x1="85" y1="85" x2="145" y2="105" stroke="rgba(0,240,255,0.4)" stroke-dasharray="2 3" />
+            <line x1="85" y1="85" x2="115" y2="145" stroke="rgba(0,240,255,0.4)" stroke-dasharray="2 3" />
+            <line x1="85" y1="85" x2="40" y2="135" stroke="rgba(0,240,255,0.4)" stroke-dasharray="2 3" />
+            <line x1="85" y1="85" x2="25" y2="85" stroke="rgba(0,240,255,0.4)" stroke-dasharray="2 3" />
+          </svg>
+
+          <!-- Central Hub Core -->
+          <div class="radar-center-hub"></div>
+
+          <!-- Radar Peripheral Satellite Nodes -->
+          <div class="radar-node-blip" style="top: 36px; left: 32px;" title="Phone / Mobile Node"></div>
+          <div class="radar-node-blip" style="top: 41px; left: 131px;" title="Router Gateway"></div>
+          <div class="radar-node-blip" style="top: 101px; left: 141px;" title="Gemini AI Cloud"></div>
+          <div class="radar-node-blip" style="top: 141px; left: 111px;" title="Audio / Mic I/O"></div>
+          <div class="radar-node-blip" style="top: 131px; left: 36px;" title="Display / Screen Vision"></div>
+          <div class="radar-node-blip" style="top: 81px; left: 21px;" title="Telegram API"></div>
+        </div>
+
+        <div style="font-family: var(--font-mono); font-size: 9px; color: var(--cyan-bright); margin-top: 6px; opacity: 0.85;">
+          6/6 KNOTEN AKTIV // 127.0.0.1
+        </div>
+      </div>
+
+    </div>
+
   </main>
 
-  <!-- Input Dock -->
+  <!-- Bottom Control Deck Dock -->
   <footer>
-    <div class="input-wrapper">
-      <input type="text" id="chat-input" placeholder="মুখে সরাসরি কথা বলুন অথবা টেক্সট লিখুন..." autocomplete="off" />
-      <div class="actions">
-        <button id="btn-voice" class="active-listening" title="ভয়েস অন/অফ করুন">🎙️</button>
-        <button id="btn-send" title="পাঠান">➤</button>
-      </div>
+    <div class="dock-buttons">
+      <button class="dock-btn" onclick="focusWidget('widget-ram')">RAM</button>
+      <button class="dock-btn" onclick="focusWidget('widget-temp')">TEMP</button>
+      <button class="dock-btn" onclick="focusWidget('widget-netz')">NETZ</button>
+      <button class="dock-btn" onclick="focusWidget('widget-wetter')">WETTER</button>
+      <button class="dock-btn active" onclick="focusWidget('widget-reaktor')">REAKTOR</button>
+      <button class="dock-btn" onclick="focusWidget('widget-geraete')">GERÄTE</button>
+      <button class="dock-btn" onclick="focusWidget('widget-debug-log')">DEBUG-LOG</button>
+      <button class="dock-btn" onclick="focusWidget('widget-netz-karte')">NETZ-KARTE</button>
+      <button class="dock-btn" onclick="focusWidget('widget-maerkte')">MÄRKTE</button>
+      <button class="dock-btn" onclick="focusWidget('widget-briefing')">BRIEFING</button>
+    </div>
+
+    <div class="dock-branding">
+      <span>IOTUELI // MK-VII</span>
+      <span style="color: var(--green-live);">● ONLINE</span>
     </div>
   </footer>
 
+  <!-- ==========================================================================
+       J.A.R.V.I.S. Audio, Canvas & Logic Subsystem
+       ========================================================================== -->
   <script>
-    // State Management
-    let ws = null;
-    let ttsEnabled = true;
-    let isAlwaysListening = true;
-    let currentLang = 'bn-BD';
-    let recognition = null;
-    let isAgentSpeaking = false;
-    let currentAudio = null;
-    let isWaitingFollowup = false;
-    let followupTimer = null;
-    let followupTimeoutTimer = null;
-    let currentAgentCard = null;
+    /* ==========================================================================
+       1. Web Audio API - Sci-Fi Synthesizer Sound FX
+       ========================================================================== */
     let audioCtx = null;
-    let lastSpokenText = '';
-    let lastSpokenTime = 0;
-    let micCooldownTimer = null;
-    let speechBuffer = '';
-    let speechSilenceTimer = null;
-    const SILENCE_TIMEOUT_MS = 2200; // Patient 2.2-second wait for slow speaking
+    let soundEnabled = true;
 
-    function isSelfEcho(spoken, agentText) {
-      if (!agentText || !spoken) return false;
-      const s = spoken.toLowerCase().replace(/[^a-z0-9\u0980-\u09FF]/gi, '');
-      const a = agentText.toLowerCase().replace(/[^a-z0-9\u0980-\u09FF]/gi, '');
-      if (s.length >= 4 && a.includes(s)) return true;
-      if (a.length >= 4 && s.includes(a)) return true;
-      return false;
+    function initAudio() {
+      if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (AudioContext) {
+          audioCtx = new AudioContext();
+        }
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
     }
 
-    const messagesEl = document.getElementById('messages');
-    const inputEl = document.getElementById('chat-input');
-    const btnSend = document.getElementById('btn-send');
-    const btnVoice = document.getElementById('btn-voice');
-    const btnTts = document.getElementById('btn-tts');
-    const btnReset = document.getElementById('btn-reset');
-    const btnAlwaysListen = document.getElementById('btn-always-listen');
-    const listenStatusText = document.getElementById('listen-status-text');
-    const selectVoice = document.getElementById('select-voice');
-    const appLogo = document.getElementById('app-logo');
-    const speechPreview = document.getElementById('speech-preview');
-    const speechPreviewText = document.getElementById('speech-preview-text');
-
-    // Chime Sounds
-    function playChime(freq1 = 587.33, freq2 = 880) {
+    // Play cyber click / blip sound
+    function playSciFiBeep(freq = 880, type = 'sine', duration = 0.08) {
+      if (!soundEnabled) return;
       try {
-        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        const now = audioCtx.currentTime;
-        
-        const osc1 = audioCtx.createOscillator();
-        const gain1 = audioCtx.createGain();
-        osc1.frequency.setValueAtTime(freq1, now);
-        gain1.gain.setValueAtTime(0.18, now);
-        gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
-        osc1.connect(gain1);
-        gain1.connect(audioCtx.destination);
-        osc1.start(now);
-        osc1.stop(now + 0.3);
+        initAudio();
+        if (!audioCtx) return;
 
-        const osc2 = audioCtx.createOscillator();
-        const gain2 = audioCtx.createGain();
-        osc2.frequency.setValueAtTime(freq2, now + 0.12);
-        gain2.gain.setValueAtTime(0.22, now + 0.12);
-        gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
-        osc2.connect(gain2);
-        gain2.connect(audioCtx.destination);
-        osc2.start(now + 0.12);
-        osc2.stop(now + 0.45);
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(freq * 1.5, audioCtx.currentTime + duration);
+
+        gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
       } catch (e) {
-        console.log("AudioContext blocked until user interaction", e);
+        // Audio policy ignore
       }
     }
 
-    // Stop speaking immediately (Barge-in / Interruption)
-    function stopSpeakingAudio() {
-      if (currentAudio) {
-        try {
-          currentAudio.pause();
-          currentAudio.currentTime = 0;
-        } catch (e) {}
-        currentAudio = null;
+    // Core pulsing hum effect
+    function playReactorPulseSound() {
+      if (!soundEnabled) return;
+      try {
+        initAudio();
+        if (!audioCtx) return;
+
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(140, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(280, audioCtx.currentTime + 0.35);
+
+        gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.35);
+      } catch (e) {}
+    }
+
+    /* ==========================================================================
+       2. Real-time Digital Clock & Status Updaters
+       ========================================================================== */
+    function updateDigitalClock() {
+      const now = new Date();
+      const h = String(now.getHours()).padStart(2, '0');
+      const m = String(now.getMinutes()).padStart(2, '0');
+      const s = String(now.getSeconds()).padStart(2, '0');
+      document.getElementById('hdr-clock').textContent = `${h}:${m}:${s}`;
+    }
+    setInterval(updateDigitalClock, 1000);
+    updateDigitalClock();
+
+    function getApiBaseUrl() {
+      if (typeof location !== 'undefined' && location.protocol && location.protocol.startsWith('http')) {
+        return '';
       }
-      if (window.speechSynthesis) {
-        window.speechSynthesis.cancel();
-      }
-      clearTimeout(micCooldownTimer);
-      isAgentSpeaking = false;
-      speechPreview.style.display = 'none';
-      if (isAlwaysListening && recognition) {
-        try { recognition.start(); } catch (e) {}
+      return 'http://127.0.0.1:8765';
+    }
+
+    /* ==========================================================================
+       3. Live Telemetry Polling & Gauge Animators
+       ========================================================================== */
+    async function fetchHardwareTelemetry() {
+      try {
+        const res = await fetch(`${getApiBaseUrl()}/api/telemetry`);
+        if (!res.ok) return;
+        const data = await res.json();
+
+        // Update CPU Badge
+        if (data.cpu_pct !== undefined) {
+          document.getElementById('hdr-cpu-badge').textContent = `CPU ${Math.round(data.cpu_pct)}%`;
+        }
+
+        // Update Procs
+        if (data.procs_count !== undefined) {
+          document.getElementById('hdr-procs').textContent = data.procs_count;
+        }
+
+        // Update RAM Gauge
+        if (data.ram_pct !== undefined) {
+          const pct = Math.round(data.ram_pct);
+          document.getElementById('val-ram-pct').textContent = `${pct}%`;
+
+          // Circle stroke circumference is 2 * PI * 32 = ~201
+          const circumference = 201;
+          const offset = circumference - (pct / 100) * circumference;
+          document.getElementById('ram-svg-fill').style.strokeDashoffset = offset;
+        }
+        if (data.ram_total_gb) document.getElementById('val-ram-total').textContent = `${data.ram_total_gb} GB`;
+        if (data.ram_used_gb) document.getElementById('val-ram-used').textContent = `${data.ram_used_gb} GB`;
+        if (data.ram_free_gb) document.getElementById('val-ram-free').textContent = `${data.ram_free_gb} GB`;
+
+        // Update Temperatures
+        if (data.temperatures) {
+          const cpuT = data.temperatures.cpu || 42.4;
+          const gpuT = data.temperatures.gpu || 39.2;
+          const diskT = data.temperatures.disk || 41.5;
+
+          document.getElementById('val-temp-cpu').textContent = `${cpuT}°C`;
+          document.getElementById('val-temp-gpu').textContent = `${gpuT}°C`;
+          document.getElementById('val-temp-disk').textContent = `${diskT}°C`;
+
+          document.getElementById('bar-temp-cpu').style.width = `${Math.min(100, (cpuT / 90) * 100)}%`;
+          document.getElementById('bar-temp-gpu').style.width = `${Math.min(100, (gpuT / 90) * 100)}%`;
+          document.getElementById('bar-temp-disk').style.width = `${Math.min(100, (diskT / 90) * 100)}%`;
+        }
+
+      } catch (err) {
+        // Fallback simulation mode if API is unreachable
+        simulateSubtleFluctuations();
       }
     }
 
-    // WebSocket Connection
+    function simulateSubtleFluctuations() {
+      // Subtle natural fluctuations around realistic numbers
+      const baseRam = 29;
+      const ramFluc = baseRam + Math.round(Math.sin(Date.now() / 4000) * 2);
+      document.getElementById('val-ram-pct').textContent = `${ramFluc}%`;
+      const offset = 201 - (ramFluc / 100) * 201;
+      document.getElementById('ram-svg-fill').style.strokeDashoffset = offset;
+
+      const cpuVal = (42.4 + Math.sin(Date.now() / 3000) * 1.5).toFixed(1);
+      document.getElementById('val-temp-cpu').textContent = `${cpuVal}°C`;
+      document.getElementById('bar-temp-cpu').style.width = `${(cpuVal / 90) * 100}%`;
+    }
+
+    setInterval(fetchHardwareTelemetry, 2500);
+    fetchHardwareTelemetry();
+
+    /* ==========================================================================
+       4. High-Framerate Network Oscilloscope Canvas
+       ========================================================================== */
+    const netCanvas = document.getElementById('network-canvas');
+    const netCtx = netCanvas ? netCanvas.getContext('2d') : null;
+    let netPhase = 0;
+
+    function renderNetworkOscilloscope() {
+      if (!netCtx) return;
+      const w = netCanvas.width;
+      const h = netCanvas.height;
+
+      netCtx.clearRect(0, 0, w, h);
+
+      // Subtle Grid lines
+      netCtx.strokeStyle = 'rgba(0, 240, 255, 0.08)';
+      netCtx.lineWidth = 1;
+      for (let x = 0; x < w; x += 20) {
+        netCtx.beginPath();
+        netCtx.moveTo(x, 0);
+        netCtx.lineTo(x, h);
+        netCtx.stroke();
+      }
+      for (let y = 0; y < h; y += 15) {
+        netCtx.beginPath();
+        netCtx.moveTo(0, y);
+        netCtx.lineTo(w, y);
+        netCtx.stroke();
+      }
+
+      // Wave 1: Cyan (TX)
+      netCtx.beginPath();
+      netCtx.strokeStyle = '#00f0ff';
+      netCtx.lineWidth = 1.8;
+      netCtx.shadowColor = 'rgba(0, 240, 255, 0.8)';
+      netCtx.shadowBlur = 6;
+
+      for (let x = 0; x < w; x++) {
+        const y = h / 2 + 
+          Math.sin(x * 0.045 + netPhase) * 14 + 
+          Math.sin(x * 0.09 - netPhase * 0.5) * 6;
+        if (x === 0) netCtx.moveTo(x, y);
+        else netCtx.lineTo(x, y);
+      }
+      netCtx.stroke();
+
+      // Wave 2: Magenta / Pink (RX)
+      netCtx.beginPath();
+      netCtx.strokeStyle = '#ff33bb';
+      netCtx.lineWidth = 1.4;
+      netCtx.shadowColor = 'rgba(255, 51, 187, 0.7)';
+      netCtx.shadowBlur = 4;
+
+      for (let x = 0; x < w; x++) {
+        const y = h / 2 + 
+          Math.sin(x * 0.035 - netPhase * 1.2) * 20 + 
+          Math.cos(x * 0.08 + netPhase * 0.8) * 8;
+        if (x === 0) netCtx.moveTo(x, y);
+        else netCtx.lineTo(x, y);
+      }
+      netCtx.stroke();
+
+      netPhase += 0.06;
+      requestAnimationFrame(renderNetworkOscilloscope);
+    }
+    renderNetworkOscilloscope();
+
+    /* ==========================================================================
+       5. Interactive Arc Reactor Hub
+       ========================================================================== */
+    const coreOrb = document.getElementById('core-interactive-orb');
+    coreOrb.addEventListener('click', () => {
+      playReactorPulseSound();
+      addDebugLog("Reactor Core pulse initiated by user.");
+      document.getElementById('reactor-status-text').textContent = "REACTOR CORE CHARGING // PULSE ACTIVE";
+      
+      // Temporary accelerated energy state
+      coreOrb.style.filter = "drop-shadow(0 0 60px #ffffff) drop-shadow(0 0 100px #00f0ff)";
+      setTimeout(() => {
+        coreOrb.style.filter = "";
+        document.getElementById('reactor-status-text').textContent = "BEREIT FÜR BEFEHLE // READY FOR COMMANDS";
+      }, 1600);
+
+      // Trigger microphone voice listening
+      toggleVoiceRecognition();
+    });
+
+    /* ==========================================================================
+       6. WebSocket Connection to Desktop Agent
+       ========================================================================== */
+    let socket = null;
+    let isConnected = false;
+
     function connectWebSocket() {
-      const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-      ws = new WebSocket(`${proto}//${window.location.host}/ws`);
+      const isHttp = location.protocol && location.protocol.startsWith('http');
+      const host = (isHttp && location.host) ? location.host : '127.0.0.1:8765';
+      const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const wsUrl = `${wsProtocol}//${host}/ws`;
 
-      ws.onopen = () => {
-        console.log('Connected to monaAi backend');
-        if (!window.__hasGreeted) {
-          window.__hasGreeted = true;
-          setTimeout(() => {
-            speakBengaliNeural("হ্যাঁ জান, বলো আমি শুনছি...", () => {
-              startInactivityTimer();
-            });
-          }, 800);
-        }
-      };
+      try {
+        socket = new WebSocket(wsUrl);
 
-      ws.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        handleServerEvent(data);
-      };
+        socket.onopen = () => {
+          isConnected = true;
+          addDebugLog("WebSocket connected to J.A.R.V.I.S. Core.");
+          document.getElementById('hdr-state').textContent = "ONLINE";
+        };
 
-      ws.onclose = (e) => {
-        if (e && e.reason === "Superseded by new client") {
-          console.warn("Disconnected because monaAi was opened in another window.");
-          stopSpeakingAudio();
-          setAlwaysListening(false);
-          document.body.innerHTML = `
-            <div style="display:flex; height:100vh; align-items:center; justify-content:center; flex-direction:column; color:#94a3b8; font-family:sans-serif; text-align:center; padding:24px; background:#080b14;">
-              <h2 style="color:#f8fafc; margin-bottom:12px;">monaAi অন্য একটি উইন্ডোতে চালু আছে 💖</h2>
-              <p>দুটো উইন্ডোতে ডাবল ভয়েস যাতে না হয়, তাই এই উইন্ডোটি পজ করা হয়েছে।</p>
-              <button onclick="location.reload()" style="margin-top:20px; padding:10px 22px; border-radius:10px; background:linear-gradient(135deg, #6366f1, #06b6d4); color:#fff; border:none; cursor:pointer; font-weight:600;">এখানে পুনরায় সক্রিয় করুন</button>
-            </div>
-          `;
-          return;
-        }
-        console.log('Reconnecting in 2s...');
-        setTimeout(connectWebSocket, 2000);
-      };
+        socket.onmessage = (event) => {
+          try {
+            const msg = JSON.parse(event.data);
+            handleAgentMessage(msg);
+          } catch (e) {
+            console.error("WS parse error:", e);
+          }
+        };
+
+        socket.onclose = () => {
+          isConnected = false;
+          addDebugLog("WebSocket disconnected. Reconnecting in 3s...");
+          document.getElementById('hdr-state').textContent = "RECONNECTING";
+          setTimeout(connectWebSocket, 3000);
+        };
+
+        socket.onerror = (err) => {
+          console.error("WS error:", err);
+        };
+      } catch (err) {
+        console.warn("WebSocket init error:", err);
+      }
     }
-
     connectWebSocket();
 
-    // Intent Matchers for Follow-up
-    function isStopIntent(text) {
-      const lower = text.toLowerCase().trim();
-      const stopWords = [
-        'off', 'অফ', 'বন্ধ', 'না', 'না আর কিছু না', 'দরকার নেই', 'থাক', 
-        'stop', 'ক্যানসেল', 'বিদায়', 'bye', 'off koro', 'off kore dao', 
-        'bondho koro', 'ar kichu na', 'kisu na'
-      ];
-      return stopWords.some(w => lower.includes(w));
+    let alwaysListening = true;
+    let isSpeaking = false;
+    let currentAudio = null;
+    let recognition = null;
+    let isListening = false;
+
+    function handleAgentMessage(msg) {
+      if (msg.type === "ack") {
+        // Verbal and visual acknowledgment when query takes time to analyze / execute:
+        // "ok ami dekhteci ami ektu somoy dew ETA SUDU MATRO jokhon answer dite somoy lagbe tokhon eta use korbe"
+        displayAgentResponse(msg.text);
+        addDebugLog(`JARVIS: ${msg.text}`);
+        document.getElementById('hdr-state').textContent = "ANALYZING";
+        document.getElementById('reactor-status-text').textContent = "JARVIS ANALYZING // উত্তর তৈরি হচ্ছে...";
+        synthesizeSpeechAudio(msg.text);
+      } else if (msg.type === "response") {
+        displayAgentResponse(msg.text);
+        addDebugLog(`JARVIS: ${msg.text.substring(0, 60)}...`);
+        document.getElementById('hdr-state').textContent = "IDLE";
+        document.getElementById('reactor-status-text').textContent = "BEREIT FÜR BEFEHLE // READY FOR COMMANDS";
+
+        // Speak response in authentic Bangladeshi Bengali voice
+        synthesizeSpeechAudio(msg.text);
+      } else if (msg.type === "status") {
+        document.getElementById('hdr-state').textContent = "THINKING";
+        document.getElementById('reactor-status-text').textContent = msg.text || "JARVIS চিন্তা করছে...";
+      } else if (msg.type === "pre_execution") {
+        addDebugLog(`👁️ [স্ক্রিন পর্যবেক্ষণ]: ${msg.screen_summary.substring(0, 75)}...`);
+        // Pulse screen vision badge in Geräte
+        const visionCard = document.querySelector('.device-card:last-child');
+        if (visionCard) {
+          visionCard.style.borderColor = '#00f0ff';
+          setTimeout(() => { visionCard.style.borderColor = ''; }, 2500);
+        }
+      } else if (msg.type === "tool_start") {
+        addDebugLog(`🔧 [টুল কার্যকর]: ${msg.tool_name}`);
+        document.getElementById('hdr-state').textContent = "EXECUTING";
+        document.getElementById('reactor-status-text').textContent = `EXECUTING: ${msg.tool_name.toUpperCase()}`;
+      } else if (msg.type === "tool_end") {
+        if (msg.is_obstacle) {
+          addDebugLog(`⚠️ [কাজে বাধা]: ${msg.obstacle_msg}`);
+          playSciFiBeep(450, 'sawtooth', 0.15);
+        } else {
+          addDebugLog(`✔ [সম্পন্ন]: ${msg.tool_name}`);
+        }
+      } else if (msg.type === "error") {
+        addDebugLog(`❌ ERROR: ${msg.message}`);
+        displayAgentResponse(`ত্রুটি: ${msg.message}`);
+      }
     }
 
-    function isContinueIntent(text) {
-      const lower = text.toLowerCase().trim();
-      const continueWords = [
-        'হ্যাঁ', 'হাঁ', 'হা', 'yes', 'আরও', 'aro', 'থাকুক', 
-        'bolbo', 'বলব', 'aro kotha ache', 'open thakuk'
-      ];
-      return continueWords.some(w => lower.includes(w));
+    async function sendUserCommand(text) {
+      if (!text || !text.trim()) return;
+      playSciFiBeep(1200, 'sine', 0.05);
+
+      const cleanText = text.trim();
+      addDebugLog(`USER: ${cleanText}`);
+      document.getElementById('hdr-state').textContent = "THINKING";
+      document.getElementById('reactor-status-text').textContent = "JARVIS ANALYZING // কাজ করছে...";
+
+      const normalized = cleanText.toLowerCase();
+      const isWakeWord = ["জার্ভিস", "জারভিস", "jarvis", "hey jarvis", "hi jarvis", "শুনছো", "শুনছেন", "হ্যালো", "হাই", "hello", "hi"].includes(normalized);
+
+      if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify({ action: "chat", text: cleanText }));
+      } else {
+        // Fallback via HTTP REST API if WebSocket is connecting or offline
+        if (!isWakeWord) {
+          const ackMsg = "ঠিক আছে স্যার, আমি দেখছি, আমাকে একটু সময় দিন...";
+          displayAgentResponse(ackMsg);
+          synthesizeSpeechAudio(ackMsg);
+        }
+
+        try {
+          const res = await fetch(`${getApiBaseUrl()}/api/chat`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: cleanText })
+          });
+          const data = await res.json();
+          if (data.response) {
+            displayAgentResponse(data.response);
+            addDebugLog(`JARVIS: ${data.response.substring(0, 60)}...`);
+            document.getElementById('hdr-state').textContent = "IDLE";
+            document.getElementById('reactor-status-text').textContent = "BEREIT FÜR BEFEHLE // READY FOR COMMANDS";
+            synthesizeSpeechAudio(data.response);
+          } else if (data.error) {
+            displayAgentResponse(`ত্রুটি: ${data.error}`);
+          }
+        } catch (err) {
+          console.error("HTTP chat error:", err);
+          displayAgentResponse("কানেকশন পাওয়া যায়নি। সার্ভার ব্যাকএন্ড চালু আছে কি না পরীক্ষা করুন স্যার।");
+        }
+      }
     }
 
-    // Speech Recognition Setup
+    /* ==========================================================================
+       7. Bengali Neural Text-to-Speech (edge-tts /tts)
+       ========================================================================== */
+    async function synthesizeSpeechAudio(text) {
+      try {
+        isSpeaking = true;
+
+        // Stop previous audio so speeches do not overlap
+        if (currentAudio) {
+          try {
+            currentAudio.pause();
+            currentAudio.currentTime = 0;
+          } catch (e) {}
+          currentAudio = null;
+        }
+
+        // Temporarily pause recognition so JARVIS does not hear its own audio
+        if (recognition && isListening) {
+          try { recognition.abort(); } catch (e) {}
+        }
+
+        const res = await fetch(`${getApiBaseUrl()}/tts`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            text: text,
+            voice: 'bn-BD-NabanitaNeural',
+            rate: '+0%',
+            pitch: '+0Hz'
+          })
+        });
+
+        if (!res.ok || res.status === 204) {
+          isSpeaking = false;
+          resumeContinuousListening();
+          return;
+        }
+
+        const blob = await res.blob();
+        const audioUrl = URL.createObjectURL(blob);
+        const audio = new Audio(audioUrl);
+        currentAudio = audio;
+
+        // Core pulses to speech rhythm
+        coreOrb.style.animation = "plasmaBreathing 0.8s infinite ease-in-out";
+        audio.onended = () => {
+          coreOrb.style.animation = "plasmaBreathing 3s infinite ease-in-out";
+          URL.revokeObjectURL(audioUrl);
+          if (currentAudio === audio) {
+            currentAudio = null;
+            isSpeaking = false;
+            resumeContinuousListening();
+          }
+        };
+
+        audio.play().catch(e => {
+          console.log("Audio autoplay prevented:", e);
+          if (currentAudio === audio) {
+            currentAudio = null;
+            isSpeaking = false;
+            resumeContinuousListening();
+          }
+        });
+      } catch (err) {
+        console.warn("TTS fetch error:", err);
+        isSpeaking = false;
+        resumeContinuousListening();
+      }
+    }
+
+    function resumeContinuousListening() {
+      if (alwaysListening && !isSpeaking) {
+        setTimeout(() => {
+          if (!isListening && !isSpeaking) {
+            try { recognition.start(); } catch (e) {}
+          }
+        }, 400);
+      }
+    }
+
+    /* ==========================================================================
+       8. Continuous Voice Input Recognition (Always-Listening Mode)
+       ========================================================================== */
     function initSpeechRecognition() {
-      if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
-        btnVoice.style.opacity = '0.5';
-        btnAlwaysListen.style.display = 'none';
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        addDebugLog("Browser Web Speech API not available.");
         return;
       }
-
-      const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-      recognition = new SpeechRec();
-      recognition.continuous = true;
-      recognition.interimResults = true;
-      recognition.lang = currentLang;
+      recognition = new SpeechRecognition();
+      recognition.lang = 'bn-BD'; // Bengali (Bangladesh)
+      recognition.continuous = false;
+      recognition.interimResults = false;
 
       recognition.onstart = () => {
-        console.log('Speech recognition active.');
-        updateVoiceVisuals(true);
+        isListening = true;
+        document.getElementById('btn-mic').classList.add('active');
+        const vi = document.getElementById('voice-indicator');
+        if (vi) vi.style.background = '#00ffaa';
+        document.getElementById('reactor-status-text').textContent = "LISTENING 🎤 // শুনছি স্যার... বলুন";
       };
 
       recognition.onresult = (event) => {
-        // If agent is speaking, completely discard mic input to prevent self-reply loop!
-        if (isAgentSpeaking) {
-          console.log("Discarding speech input while agent is speaking to prevent self-echo");
-          return;
-        }
-
-        // Ignore mic reverberation right after agent finishes speaking
-        if (Date.now() - lastSpokenTime < 1200) {
-          console.log("Discarding mic reverberation right after agent speech");
-          return;
-        }
-
-        let interim = '';
-        let finalTranscript = '';
-
-        for (let i = event.resultIndex; i < event.results.length; ++i) {
-          const res = event.results[i];
-          if (res.isFinal) {
-            finalTranscript += res[0].transcript;
-          } else {
-            interim += res[0].transcript;
-          }
-        }
-
-        const spoken = (finalTranscript || interim).trim();
-        if (!spoken) return;
-
-        // Prevent self-reply loop if recognized words match what agent just spoke
-        if (isSelfEcho(spoken, lastSpokenText)) {
-          console.log("Detected self-echo loop, ignoring:", spoken);
-          return;
-        }
-
-        // Reset inactivity timer while user is speaking
-        resetInactivityTimer();
-
-        // If waiting for follow-up answer ("Do you want to say anything more or turn off?")
-        if (isWaitingFollowup) {
-          speechPreview.style.display = 'flex';
-          speechPreviewText.innerText = `উত্তর: ${spoken}`;
-
-          if (finalTranscript) {
-            handleFollowupAnswer(finalTranscript.trim());
-          }
-          return;
-        }
-
-        // Patient Slow-Speech Accumulation:
-        // Accumulate chunks and wait 2.2 seconds of complete silence before sending
-        if (finalTranscript) {
-          speechBuffer = (speechBuffer ? speechBuffer + ' ' : '') + finalTranscript.trim();
-        }
-
-        const fullCurrentTranscript = (speechBuffer ? speechBuffer + ' ' : '') + interim;
-        inputEl.value = fullCurrentTranscript.trim();
-
-        // Show live patient listening feedback
-        speechPreview.style.display = 'flex';
-        speechPreviewText.innerHTML = `🎙️ <span style="color:#6ee7b7; font-weight:600;">শুনছি জান...</span> "${escapeHtml(fullCurrentTranscript.trim())}" <span style="color:#94a3b8; font-size:12px; margin-left:8px;">(ধীরে ধীরে বলুন, কথা শেষ হলে ২.২ সেকেন্ড পর পাঠাবে)</span>`;
-
-        // Reset silence timer on every sound/pause
-        clearTimeout(speechSilenceTimer);
-
-        // Schedule send only after 2.2 seconds of uninterrupted silence
-        if (speechBuffer.trim()) {
-          speechSilenceTimer = setTimeout(() => {
-            const completeMsg = speechBuffer.trim();
-            speechBuffer = '';
-            if (completeMsg) {
-              speechPreview.style.display = 'none';
-              sendMessage(completeMsg);
-            }
-          }, SILENCE_TIMEOUT_MS);
-        }
+        const transcript = event.results[0][0].transcript;
+        document.getElementById('cmd-input').value = transcript;
+        sendUserCommand(transcript);
       };
 
-      recognition.onerror = (err) => {
-        console.warn('Speech recognition warning:', err.error);
-        if (err.error === 'not-allowed') {
-          setAlwaysListening(false);
+      recognition.onerror = (event) => {
+        isListening = false;
+        if (event.error === 'not-allowed') {
+          addDebugLog("মাইক্রোফোন পারমিশন প্রয়োজন।");
+          alwaysListening = false;
+          updateVoiceToggleUI();
+        } else {
+          // Restart if continuous listening is on and not speaking
+          if (alwaysListening && !isSpeaking) {
+            setTimeout(resumeContinuousListening, 800);
+          }
         }
       };
 
       recognition.onend = () => {
-        if (isAlwaysListening && !isAgentSpeaking) {
-          setTimeout(() => {
-            if (isAlwaysListening && !isAgentSpeaking) {
-              try { recognition.start(); } catch (e) {}
-            }
-          }, 250);
-        } else {
-          updateVoiceVisuals(false);
+        isListening = false;
+        document.getElementById('btn-mic').classList.remove('active');
+        if (alwaysListening && !isSpeaking) {
+          resumeContinuousListening();
+        } else if (!isSpeaking) {
+          document.getElementById('reactor-status-text').textContent = "BEREIT FÜR BEFEHLE // READY FOR COMMANDS";
         }
       };
-
-      if (isAlwaysListening) {
-        try { recognition.start(); } catch (e) {}
-      }
     }
+    initSpeechRecognition();
 
-    function updateVoiceVisuals(active) {
-      if (active) {
-        btnVoice.classList.add('active-listening');
-        appLogo.classList.add('listening-ring');
-        btnAlwaysListen.classList.remove('paused');
-        listenStatusText.innerText = 'ভয়েস সবসময় শুনছে';
+    function updateVoiceToggleUI() {
+      const label = document.getElementById('voice-mode-label');
+      const indicator = document.getElementById('voice-indicator');
+      if (alwaysListening) {
+        if (label) label.textContent = "MIC: CONTINUOUS";
+        if (indicator) indicator.style.background = "#00ffaa";
       } else {
-        btnVoice.classList.remove('active-listening');
-        appLogo.classList.remove('listening-ring');
-        btnAlwaysListen.classList.add('paused');
-        listenStatusText.innerText = 'ভয়েস পজ করা আছে';
-        speechPreview.style.display = 'none';
+        if (label) label.textContent = "MIC: MANUAL";
+        if (indicator) indicator.style.background = "#7da5bf";
       }
     }
 
-    function setAlwaysListening(enabled) {
-      isAlwaysListening = enabled;
-      clearTimeout(followupTimer);
-      clearTimeout(followupTimeoutTimer);
-      isWaitingFollowup = false;
-
-      if (isAlwaysListening) {
-        playChime(600, 900);
-        updateVoiceVisuals(true);
-        if (recognition) {
-          try { recognition.start(); } catch (e) {}
-        }
-        startInactivityTimer();
-      } else {
-        playChime(400, 250);
-        updateVoiceVisuals(false);
-        stopSpeakingAudio();
-        if (recognition) {
-          try { recognition.stop(); } catch (e) {}
-        }
-      }
-    }
-
-    btnAlwaysListen.addEventListener('click', () => {
-      setAlwaysListening(!isAlwaysListening);
-    });
-
-    btnVoice.addEventListener('click', () => {
-      setAlwaysListening(!isAlwaysListening);
-    });
-
-    // Inactivity Follow-up Logic: "আপনি কি আরও কিছু বলবেন, নাকি অফ করে দেব?"
-    function resetInactivityTimer() {
-      clearTimeout(followupTimer);
-      clearTimeout(followupTimeoutTimer);
-      if (isAlwaysListening && !isWaitingFollowup) {
-        startInactivityTimer();
-      }
-    }
-
-    function startInactivityTimer() {
-      clearTimeout(followupTimer);
-      followupTimer = setTimeout(() => {
-        triggerFollowupPrompt();
-      }, 18000);
-    }
-
-    function triggerFollowupPrompt() {
-      if (!isAlwaysListening || isAgentSpeaking) return;
-
-      isWaitingFollowup = true;
-      playChime(500, 750);
-
-      const promptText = "জান, তুমি কি আরও কিছু বলবে, নাকি এখন একটু অফ করে রাখব?";
-
-      // Render follow-up card in chat
-      const row = document.createElement('div');
-      row.className = 'msg-row agent';
-      row.innerHTML = `
-        <div class="avatar">💖</div>
-        <div class="msg-content">
-          <div class="followup-card">
-            <div class="followup-text">❓ ${promptText}</div>
-            <div class="followup-chips">
-              <button class="chip-btn yes" onclick="handleFollowupAnswer('হ্যাঁ, আরও কথা বলব')">🎙️ হ্যাঁ জান, আরও কথা বলব</button>
-              <button class="chip-btn no" onclick="handleFollowupAnswer('অফ করো')">🛑 এখন থাক জানু</button>
-            </div>
-          </div>
-        </div>
-      `;
-      messagesEl.appendChild(row);
-      messagesEl.scrollTop = messagesEl.scrollHeight;
-
-      // Speak follow-up question in authentic Bangladeshi neural voice
-      speakBengaliNeural(promptText, () => {
-        followupTimeoutTimer = setTimeout(() => {
-          if (isWaitingFollowup) {
-            const sleepMsg = "জান, কোনো সাড়া না পেয়ে ভয়েস সাময়িক অফ রাখলাম। দরকার হলে শুধু মোনা বলে ডেকো বা মাইকে চাপ দিও!";
-            appendSystemAgentMessage(sleepMsg);
-            speakBengaliNeural(sleepMsg);
-            setAlwaysListening(false);
+    const voiceToggleBtn = document.getElementById('btn-voice-toggle');
+    if (voiceToggleBtn) {
+      voiceToggleBtn.addEventListener('click', () => {
+        alwaysListening = !alwaysListening;
+        playSciFiBeep(1100, 'triangle', 0.05);
+        updateVoiceToggleUI();
+        if (alwaysListening) {
+          resumeContinuousListening();
+        } else {
+          if (recognition && isListening) {
+            try { recognition.abort(); } catch (e) {}
           }
-        }, 15000);
+        }
       });
     }
 
-    function handleFollowupAnswer(answer) {
-      clearTimeout(followupTimeoutTimer);
-      clearTimeout(followupTimer);
-      isWaitingFollowup = false;
-
-      if (isStopIntent(answer)) {
-        const reply = "ঠিক আছে আমার জান, আমি অফ থাকছি। নিজের যত্ন নিও, যখনই লাগবে ডাক দিও!";
-        appendSystemAgentMessage(reply);
-        speakBengaliNeural(reply);
-        setAlwaysListening(false);
-      } else if (isContinueIntent(answer)) {
-        const reply = "হ্যাঁ জান, বলো আমি শুনছি...";
-        appendSystemAgentMessage(reply);
-        speakBengaliNeural(reply);
-        startInactivityTimer();
-      } else {
-        // User gave a new command directly
-        sendMessage(answer);
+    function toggleVoiceRecognition() {
+      if (!recognition) {
+        initSpeechRecognition();
       }
-    }
-
-    function appendSystemAgentMessage(text) {
-      const row = document.createElement('div');
-      row.className = 'msg-row agent';
-      row.innerHTML = `
-        <div class="avatar">💖</div>
-        <div class="msg-content"><p>${escapeHtml(text)}</p></div>
-      `;
-      messagesEl.appendChild(row);
-      messagesEl.scrollTop = messagesEl.scrollHeight;
-    }
-
-    // =========================================================================
-    // Authentic Bangladeshi Neural Voice Engine (ONLY via /tts backend)
-    // =========================================================================
-    async function speakBengaliNeural(text, onFinishedCallback) {
-      if (!ttsEnabled) {
-        if (onFinishedCallback) onFinishedCallback();
+      if (!recognition) {
+        alert("আপনার ব্রাউজারে স্পিচ রিকগনিশন সাপোর্ট পাওয়া যায়নি। টেক্সট বক্সে টাইপ করুন।");
         return;
       }
 
-      stopSpeakingAudio();
-
-      isAgentSpeaking = true;
-      lastSpokenText = text;
-      lastSpokenTime = Date.now();
-
-      // Immediately mute/abort mic so speakers don't feed into speech recognition
-      if (recognition) {
-        try { recognition.abort(); } catch (e) {}
-      }
-
-      // Show speaking indicator with manual stop button
-      speechPreview.style.display = 'flex';
-      speechPreviewText.innerHTML = `💖 মোনা কথা বলছে... <button onclick="stopSpeakingAudio()" style="margin-left:12px; background:#ef4444; color:#fff; border:none; border-radius:6px; padding:3px 10px; cursor:pointer; font-size:12px; font-weight:600;">🛑 থামাও</button>`;
-
-      const selectedVoice = selectVoice ? selectVoice.value : "bn-BD-NabanitaNeural";
-
-      try {
-        const response = await fetch('/tts', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: text, voice: selectedVoice })
-        });
-
-        if (response.ok && response.status === 200) {
-          const blob = await response.blob();
-          const audioUrl = URL.createObjectURL(blob);
-          currentAudio = new Audio(audioUrl);
-
-          const finishSpeech = () => {
-            currentAudio = null;
-            lastSpokenTime = Date.now();
-            clearTimeout(micCooldownTimer);
-            // 800ms cooldown so room acoustic reflections from speakers completely dissipate
-            micCooldownTimer = setTimeout(() => {
-              isAgentSpeaking = false;
-              speechPreview.style.display = 'none';
-              if (isAlwaysListening && recognition) {
-                try { recognition.start(); } catch (e) {}
-              }
-              if (onFinishedCallback) onFinishedCallback();
-            }, 800);
-          };
-
-          currentAudio.onended = finishSpeech;
-          currentAudio.onerror = (err) => {
-            console.error("Audio playback error:", err);
-            finishSpeech();
-          };
-
-          await currentAudio.play();
-          return;
-        }
-      } catch (err) {
-        console.error("Neural TTS request error:", err);
-      }
-
-      clearTimeout(micCooldownTimer);
-      micCooldownTimer = setTimeout(() => {
-        isAgentSpeaking = false;
-        speechPreview.style.display = 'none';
-        if (isAlwaysListening && recognition) {
-          try { recognition.start(); } catch (e) {}
-        }
-        if (onFinishedCallback) onFinishedCallback();
-      }, 300);
-    }
-
-    btnTts.addEventListener('click', () => {
-      ttsEnabled = !ttsEnabled;
-      btnTts.classList.toggle('active', ttsEnabled);
-      btnTts.innerText = ttsEnabled ? '🔊' : '🔇';
-      if (!ttsEnabled) {
-        stopSpeakingAudio();
-      }
-    });
-
-    // UI Message Rendering
-    function appendUserMessage(text) {
-      const row = document.createElement('div');
-      row.className = 'msg-row user';
-      row.innerHTML = `
-        <div class="avatar">👤</div>
-        <div class="msg-content">${escapeHtml(text)}</div>
-      `;
-      messagesEl.appendChild(row);
-      messagesEl.scrollTop = messagesEl.scrollHeight;
-    }
-
-    function createAgentMessageContainer() {
-      const row = document.createElement('div');
-      row.className = 'msg-row agent';
-      row.innerHTML = `
-        <div class="avatar">💖</div>
-        <div class="msg-content" id="active-agent-content">
-          <div class="tool-spinner" style="display:inline-block; margin-right:6px;"></div> <em>কাজ করছি জান, একটু অপেক্ষা করো... ❤️</em>
-        </div>
-      `;
-      messagesEl.appendChild(row);
-      messagesEl.scrollTop = messagesEl.scrollHeight;
-      return row.querySelector('#active-agent-content');
-    }
-
-    function handleServerEvent(data) {
-      if (data.type === 'tool_start') {
-        if (!currentAgentCard) {
-          currentAgentCard = createAgentMessageContainer();
-        }
-        const toolEl = document.createElement('div');
-        toolEl.className = 'tool-card';
-        toolEl.id = `tool-${data.tool_name}`;
-        toolEl.innerHTML = `
-          <div class="tool-header">
-            <span class="tool-badge"><div class="tool-spinner"></div> ⚡ কাজ চলতেছে: ${data.tool_name}</span>
-            <span>running...</span>
-          </div>
-          <div class="tool-body">${escapeHtml(JSON.stringify(data.args, null, 2))}</div>
-        `;
-        currentAgentCard.appendChild(toolEl);
-        messagesEl.scrollTop = messagesEl.scrollHeight;
-
-      } else if (data.type === 'tool_end') {
-        const toolEl = document.getElementById(`tool-${data.tool_name}`);
-        if (toolEl) {
-          const status = data.result && data.result.status ? data.result.status : 'done';
-          const header = toolEl.querySelector('.tool-header');
-          header.innerHTML = `
-            <span class="tool-badge">✔ কাজ শেষ: ${data.tool_name}</span>
-            <span style="color:${status === 'success' ? '#34d399' : '#f87171'}">${status}</span>
-          `;
-          const body = toolEl.querySelector('.tool-body');
-          body.innerText += "\n\nফলাফল:\n" + JSON.stringify(data.result, null, 2);
-        }
-
-      } else if (data.type === 'response') {
-        if (!currentAgentCard) {
-          currentAgentCard = createAgentMessageContainer();
-        }
-        const spinner = currentAgentCard.querySelector('.tool-spinner');
-        if (spinner && spinner.parentElement) {
-          spinner.parentElement.remove();
-        }
-
-        const respDiv = document.createElement('div');
-        respDiv.innerHTML = marked.parse(data.text);
-        currentAgentCard.appendChild(respDiv);
-        messagesEl.scrollTop = messagesEl.scrollHeight;
-
-        // Speak aloud in authentic Bangladeshi Neural Voice!
-        speakBengaliNeural(data.text, () => {
-          startInactivityTimer();
-        });
-
-        currentAgentCard = null;
-        btnSend.disabled = false;
-
-      } else if (data.type === 'error') {
-        if (!currentAgentCard) {
-          currentAgentCard = createAgentMessageContainer();
-        }
-        currentAgentCard.innerHTML += `<p style="color:#ef4444"><strong>সমস্যা:</strong> ${escapeHtml(data.message)}</p>`;
-        currentAgentCard = null;
-        btnSend.disabled = false;
-        startInactivityTimer();
-      }
-    }
-
-    function sendMessage(textOverride) {
-      clearTimeout(speechSilenceTimer);
-      speechBuffer = '';
-      speechPreview.style.display = 'none';
-
-      const text = (textOverride || inputEl.value).trim();
-      if (!text) return;
-
-      stopSpeakingAudio();
-      clearTimeout(followupTimer);
-      clearTimeout(followupTimeoutTimer);
-      isWaitingFollowup = false;
-
-      appendUserMessage(text);
-      inputEl.value = '';
-      btnSend.disabled = true;
-
-      currentAgentCard = createAgentMessageContainer();
-
-      if (ws && ws.readyState === WebSocket.OPEN) {
-        ws.send(JSON.stringify({ action: 'chat', text: text }));
+      if (isListening) {
+        alwaysListening = false;
+        updateVoiceToggleUI();
+        try { recognition.stop(); } catch (e) {}
       } else {
-        currentAgentCard.innerHTML = `<p style="color:#ef4444">কানেকশন বিচ্ছিন্ন। পুনরায় যুক্ত হওয়ার চেষ্টা চলছে...</p>`;
-        btnSend.disabled = false;
-      }
-    }
-
-    btnSend.addEventListener('click', () => sendMessage());
-    inputEl.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        sendMessage();
-      }
-    });
-
-    btnReset.addEventListener('click', () => {
-      if (confirm('পূর্ববর্তী কথোপকথন রিসেট করতে চান?')) {
-        if (ws && ws.readyState === WebSocket.OPEN) {
-          ws.send(JSON.stringify({ action: 'reset' }));
-          messagesEl.innerHTML = '';
-          appendSystemAgentMessage('আমাদের আগের সব কথা ভুলে আবার নতুন করে শুরু করলাম জান! বলো এখন কী করতে হবে সোনা?');
-          startInactivityTimer();
+        alwaysListening = true;
+        updateVoiceToggleUI();
+        try {
+          recognition.start();
+        } catch (e) {
+          console.log("Recognition restart error:", e);
         }
       }
-    });
-
-    function escapeHtml(text) {
-      if (typeof text !== 'string') text = JSON.stringify(text);
-      return text
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
     }
 
-    // Start recognition automatically on window load
-    window.addEventListener('load', () => {
-      if (window.speechSynthesis) {
-        try { window.speechSynthesis.cancel(); } catch (e) {}
+    document.getElementById('btn-mic').addEventListener('click', () => {
+      playSciFiBeep(980, 'triangle', 0.05);
+      toggleVoiceRecognition();
+    });
+
+    // Form submit handler
+    document.getElementById('cmd-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const input = document.getElementById('cmd-input');
+      const val = input.value;
+      if (val.trim()) {
+        sendUserCommand(val);
+        input.value = '';
       }
-      initSpeechRecognition();
+    });
+
+    function displayAgentResponse(text) {
+      const feed = document.getElementById('agent-response-feed');
+      const content = document.getElementById('response-content');
+      feed.classList.add('active');
+      content.textContent = text;
+    }
+
+    /* ==========================================================================
+       9. Debug Log Feed Helper
+       ========================================================================== */
+    function addDebugLog(text) {
+      const container = document.getElementById('debug-log-container');
+      if (!container) return;
+
+      const now = new Date();
+      const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+
+      const entry = document.createElement('div');
+      entry.className = 'log-entry';
+      entry.innerHTML = `<span class="time">[${timeStr}]</span>&gt; ${text}`;
+
+      container.prepend(entry);
+
+      // Keep up to 25 entries
+      while (container.children.length > 25) {
+        container.removeChild(container.lastChild);
+      }
+    }
+
+    /* ==========================================================================
+       10. Interactive Controls: Fullscreen, Sound, Widget Focus
+       ========================================================================== */
+    document.getElementById('btn-fullscreen').addEventListener('click', () => {
+      playSciFiBeep(1100, 'sine', 0.05);
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => console.log(err));
+      } else {
+        document.exitFullscreen();
+      }
+    });
+
+    document.getElementById('btn-sound').addEventListener('click', () => {
+      soundEnabled = !soundEnabled;
+      const btn = document.getElementById('btn-sound');
+      btn.textContent = soundEnabled ? '🔊' : '🔇';
+      playSciFiBeep(700, 'sine', 0.06);
+      addDebugLog(`Sound FX: ${soundEnabled ? 'ENABLED' : 'MUTED'}`);
+    });
+
+    document.getElementById('btn-ack-all').addEventListener('click', () => {
+      playSciFiBeep(1400, 'sine', 0.06);
+      addDebugLog("All device alerts acknowledged.");
+      const feed = document.getElementById('devices-feed');
+      feed.querySelectorAll('.device-card.alert-card').forEach(card => {
+        card.style.borderColor = 'rgba(0, 240, 255, 0.2)';
+        card.style.background = 'rgba(10, 19, 32, 0.75)';
+      });
+    });
+
+    function focusWidget(widgetId) {
+      playSciFiBeep(920, 'sine', 0.04);
+      document.querySelectorAll('.hud-box').forEach(box => {
+        box.style.borderColor = '';
+        box.style.boxShadow = '';
+      });
+
+      const target = document.getElementById(widgetId);
+      if (target) {
+        target.style.borderColor = 'var(--cyan-bright)';
+        target.style.boxShadow = '0 0 25px rgba(0, 240, 255, 0.4)';
+        setTimeout(() => {
+          target.style.borderColor = '';
+          target.style.boxShadow = '';
+        }, 2200);
+      }
+    }
+
+    // Audio click effect on all buttons
+    document.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('mouseenter', () => playSciFiBeep(640, 'sine', 0.02));
     });
   </script>
 </body>

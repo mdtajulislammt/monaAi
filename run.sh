@@ -3,7 +3,8 @@
 
 set -e
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_SOURCE="$(readlink -f "${BASH_SOURCE[0]}")"
+SCRIPT_DIR="$(cd "$(dirname "$SCRIPT_SOURCE")" && pwd)"
 cd "$SCRIPT_DIR"
 
 if [ ! -d "venv" ]; then
@@ -15,5 +16,9 @@ fi
 
 source venv/bin/activate
 
-# Execute main.py passing all arguments (defaults to Desktop Web UI)
-python main.py "$@"
+# Terminate any lingering process on port 8765 to prevent Errno 98
+fuser -k 8765/tcp 2>/dev/null || true
+sleep 0.2
+
+# Execute jarvis-core/main.py passing all arguments (defaults to Desktop HUD UI)
+exec python jarvis-core/main.py "$@"
