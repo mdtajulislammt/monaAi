@@ -1,7 +1,7 @@
 """Application configuration and environment settings using Pydantic."""
 from functools import lru_cache
 from pathlib import Path
-from typing import Literal, Optional
+from typing import Any, Literal, Optional, Union
 from pydantic import Field, field_validator
 try:
     from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -73,19 +73,24 @@ class Settings(BaseSettings):
     )
 
     # Voice interface
-    voice_rate: int = Field(
-        default=180,
-        alias="VOICE_RATE",
-        description="TTS speech rate (words per minute)",
+    voice_name: str = Field(
+        default="bn-BD-NabanitaNeural",
+        alias="VOICE_NAME",
+        description="Bangladeshi Neural Voice name",
     )
-    voice_volume: float = Field(
-        default=1.0,
+    voice_rate: str | int = Field(
+        default="+0%",
+        alias="VOICE_RATE",
+        description="TTS speech rate (+0% or WPM)",
+    )
+    voice_volume: str | float = Field(
+        default="+0%",
         alias="VOICE_VOLUME",
-        description="TTS audio volume (0.0 to 1.0)",
+        description="TTS audio volume (+0% or 0.0-1.0)",
     )
     voice_language: str = Field(
-        default="en",
-        alias="VOICE_LANGUAGE",
+        default="bn-BD",
+        alias="VOICE_LOCALE",
         description="STT language code",
     )
 
@@ -97,11 +102,17 @@ class Settings(BaseSettings):
             return Path.cwd().resolve()
         return Path(v).expanduser().resolve()
 
-    @field_validator("voice_volume")
+    @field_validator("voice_volume", mode="before")
     @classmethod
-    def validate_volume(cls, v: float) -> float:
-        """Ensure volume is bounded between 0.0 and 1.0."""
-        return max(0.0, min(1.0, float(v)))
+    def validate_volume(cls, v: Any) -> str | float:
+        """Ensure volume format is valid for both edge-tts and legacy engines."""
+        if isinstance(v, str) and "%" in v:
+            return v
+        try:
+            val = float(v)
+            return max(0.0, min(1.0, val))
+        except (ValueError, TypeError):
+            return "+0%"
 
 
 @lru_cache

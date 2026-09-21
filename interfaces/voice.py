@@ -49,18 +49,25 @@ class VoiceInterface:
             self.recognizer = None
 
     def _init_tts(self) -> None:
-        """Initialize pyttsx3 Text-to-Speech engine."""
+        """Initialize authentic Bangladeshi Bengali Neural Voice Engine."""
         try:
-            import pyttsx3
-            self.tts_engine = pyttsx3.init()
-            self.tts_engine.setProperty("rate", self.settings.voice_rate)
-            self.tts_engine.setProperty("volume", self.settings.voice_volume)
-            logger.info("Voice TTS engine initialized successfully.")
+            import importlib.util
+            from pathlib import Path
+            engine_path = Path(__file__).resolve().parent.parent / "jarvis-core" / "interfaces" / "voice_engine.py"
+            spec = importlib.util.spec_from_file_location("jarvis_voice_engine", str(engine_path))
+            mod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(mod)
+            self._bengali_engine = mod.get_voice_engine()
+            self.tts_engine = self._bengali_engine
+            logger.info("Bangladeshi Bengali Neural Voice Engine initialized successfully.")
         except Exception as e:
-            logger.warning(
-                f"pyttsx3 TTS could not be initialized: {e}. (Ensure espeak or native audio subsystem is available)."
-            )
-            self.tts_engine = None
+            logger.warning(f"Bengali Voice Engine initialization fallback: {e}")
+            self._bengali_engine = None
+            try:
+                import pyttsx3
+                self.tts_engine = pyttsx3.init()
+            except Exception:
+                self.tts_engine = None
 
     def is_stt_available(self) -> bool:
         """Check if Speech-to-Text is available."""
@@ -132,10 +139,17 @@ class VoiceInterface:
             print(f"[Voice TTS]: {clean_text}")
             return
 
+        if self._bengali_engine:
+            self._bengali_engine.speak(clean_text, blocking=True)
+            return
+
         with self._tts_lock:
             try:
-                self.tts_engine.say(clean_text)
-                self.tts_engine.runAndWait()
+                if hasattr(self.tts_engine, "say"):
+                    self.tts_engine.say(clean_text)
+                    self.tts_engine.runAndWait()
+                else:
+                    print(f"[Voice TTS]: {clean_text}")
             except Exception as e:
                 logger.error(f"TTS output error: {e}")
                 print(f"[Voice TTS]: {clean_text}")

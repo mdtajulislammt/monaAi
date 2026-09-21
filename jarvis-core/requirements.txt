@@ -1,0 +1,35 @@
+# Core LLM SDK
+google-genai>=1.0.0
+
+# Vector Memory & Storage
+chromadb>=0.5.0
+
+# Configuration & Environment
+pydantic>=2.7.0
+pydantic-settings>=2.2.0
+python-dotenv>=1.0.1
+
+# OS & Process Supervision
+psutil>=5.9.8
+evdev>=2.0.0
+pyautogui>=0.9.54
+pillow>=10.0.0
+
+# Headless Web Automation & Research
+playwright>=1.43.0
+
+# Model Context Protocol (FastMCP)
+mcp>=1.2.0
+
+# Voice Interface (STT & TTS)
+SpeechRecognition>=3.10.1
+edge-tts>=7.0.0
+pygame>=2.6.0
+
+# Terminal UI & Interactive REPL
+rich>=13.7.1
+prompt-toolkit>=3.0.43
+
+# Automated Testing
+pytest>=8.1.1
+pytest-asyncio>=0.23.6
